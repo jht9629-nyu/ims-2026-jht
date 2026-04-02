@@ -1,6 +1,7 @@
 // https://editor.p5js.org/jht9629-nyu/sketches/kVeqUFD1O
 // ims02-shader-trail
 /*
+- use lerp my.tx my.ty to place mouseX
 https://p5js.org/reference/p5/lerp/
 lerp(start, stop, amt) // amt 0 to 1.0
 - added windowResized
@@ -41,6 +42,7 @@ var theShader;
 var shaderTexture;
 var trail = [];
 var particles = [];
+let my = {}; // My global variables
 
 function preload() {
   theShader = new p5.Shader(this.renderer, vertShader, fragShader);
@@ -62,14 +64,42 @@ function setup() {
 
   shaderTexture = createGraphics(width, height, WEBGL);
   shaderTexture.noStroke();
+
+  my.px = random(width);
+  my.py = random(height);
+  my.x = my.px;
+  my.y = my.py;
+  my.tx = random(width);
+  my.ty = random(height);
+  my.changeSecs = 1.0;
+  my.changeTime = 0;
+  my.step = 0.02;
+  // pmouseX -> my.plocX
+  // pmouseY -> my.plocY
+  // mouseX -> my.locX
+  // mouseY -> my.locY
 }
 
 function draw() {
   background(0);
   noStroke();
 
+  my.px = my.x;
+  my.py = my.y;
+  my.x = lerp(my.x, my.tx, my.step);
+  my.y = lerp(my.y, my.ty, my.step);
+  // console.log('my.x', my.x, my.tx, 'my.y', my.y, my.ty);
+
+  my.changeTime += deltaTime / 1000;
+  if (my.changeTime > my.changeSecs) {
+    // console.log('changeTime');
+    my.changeTime = 0;
+    my.tx = random(width);
+    my.ty = random(height);
+  }
+
   // Trim end of trail.
-  trail.push([mouseX, mouseY]);
+  trail.push([my.x, my.y]);
 
   let removeCount = 1;
   if (mouseIsPressed && mouseButton == CENTER) {
@@ -87,11 +117,11 @@ function draw() {
 
   // Spawn particles.
   if (trail.length > 1 && particles.length < MAX_PARTICLE_COUNT) {
-    let mouse = new p5.Vector(mouseX, mouseY);
-    mouse.sub(pmouseX, pmouseY);
-    if (mouse.mag() > 10) {
-      mouse.normalize();
-      particles.push(new Particle(pmouseX, pmouseY, mouse.x, mouse.y));
+    let vpt = new p5.Vector(my.x, my.y);
+    vpt.sub(my.px, my.py);
+    if (vpt.mag() > 10) {
+      vpt.normalize();
+      particles.push(new Particle(my.px, my.py, vpt.x, vpt.y));
     }
   }
 
