@@ -35,7 +35,7 @@ Controls:
 const MAX_PARTICLE_COUNT = 70;
 const MAX_TRAIL_COUNT = 30;
 
-var colorScheme = ["#E69F66", "#DF843A", "#D8690F", "#B1560D", "#8A430A"];
+var colorScheme = ['#E69F66', '#DF843A', '#D8690F', '#B1560D', '#8A430A'];
 var shaded = true;
 var theShader;
 var shaderTexture;
@@ -54,7 +54,7 @@ function setup() {
     windowHeight,
     // min(windowWidth, windowHeight),
     // min(windowWidth, windowHeight),
-    WEBGL
+    WEBGL,
   );
 
   canvas.canvas.oncontextmenu = () => false; // Removes right-click menu.
@@ -111,12 +111,12 @@ function draw() {
 
     let data = serializeSketch();
 
-    theShader.setUniform("resolution", [width, height]);
-    theShader.setUniform("trailCount", trail.length);
-    theShader.setUniform("trail", data.trails);
-    theShader.setUniform("particleCount", particles.length);
-    theShader.setUniform("particles", data.particles);
-    theShader.setUniform("colors", data.colors);
+    theShader.setUniform('resolution', [width, height]);
+    theShader.setUniform('trailCount', trail.length);
+    theShader.setUniform('trail', data.trails);
+    theShader.setUniform('particleCount', particles.length);
+    theShader.setUniform('particles', data.particles);
+    theShader.setUniform('colors', data.colors);
 
     shaderTexture.rect(0, 0, width, height);
     texture(shaderTexture);
@@ -146,17 +146,14 @@ function serializeSketch() {
   data = { trails: [], particles: [], colors: [] };
 
   for (let i = 0; i < trail.length; i++) {
-    data.trails.push(
-      map(trail[i][0], 0, width, 0.0, 1.0),
-      map(trail[i][1], 0, height, 1.0, 0.0)
-    );
+    data.trails.push(map(trail[i][0], 0, width, 0.0, 1.0), map(trail[i][1], 0, height, 1.0, 0.0));
   }
 
   for (let i = 0; i < particles.length; i++) {
     data.particles.push(
       map(particles[i].pos.x, 0, width, 0.0, 1.0),
       map(particles[i].pos.y, 0, height, 1.0, 0.0),
-      (particles[i].mass * particles[i].vel.mag()) / 100
+      (particles[i].mass * particles[i].vel.mag()) / 100,
     );
 
     let itsColor = colorScheme[particles[i].colorIndex];
@@ -168,7 +165,7 @@ function serializeSketch() {
 
 // Respond to window resizing event
 function windowResized() {
-  console.log("windowResized");
+  console.log('windowResized');
   resizeCanvas(windowWidth, windowHeight);
   // !!@ fails
   // if (shaderTexture) {
