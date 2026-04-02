@@ -1,10 +1,12 @@
 // https://editor.p5js.org/jht9629-nyu/sketches/kVeqUFD1O
 // ims02-shader-trail
 /*
+https://p5js.org/reference/p5/lerp/
+lerp(start, stop, amt) // amt 0 to 1.0
 - added windowResized
-- openprocessing download file fails
-- source files copy and pasted from openprocessing
 - removed // min(windowWidth, windowHeight)
+- source files copy and pasted from openprocessing
+- openprocessing download file fails
 */
 
 // https://openprocessing.org/sketch/2774234
