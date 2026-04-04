@@ -3,3 +3,13 @@
 - [shader-trail](ims02-jht/shader-trail/index.html)
 - [get_url_params](ims02-jht/get_url_params/index.html)
 - [localStorage](ims02-jht/localStorage/index.html)
+
+## Notes
+
+```
+
+https://openprocessing.org/sketch/2682081
+Marching Ripples by Kathy McGuiness
+
+
+```
