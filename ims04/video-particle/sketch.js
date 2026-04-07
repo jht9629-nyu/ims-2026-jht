@@ -1,5 +1,7 @@
-// https://editor.p5js.org/jht9629-nyu/sketches/584bCKj5G
+// https://editor.p5js.org/jht9629-nyu/sketches/TtVWUuKVC
 // ims04-video-particle
+// https://editor.p5js.org/jht9629-nyu/sketches/584bCKj5G
+// ims04-image-particle
 // https://openprocessing.org/sketch/2911242
 // https://openprocessing.org/sketch/1685260
 // Particule, img, attraction, repulsion... by Richnou
@@ -12,7 +14,8 @@ let particles = [];
 let res = 12;
 let img;
 let ball;
-let aheight;
+let aheight; // canvas height adjust for image aspect ratio
+let ayoffset;
 
 function preload() {
   let url = 'https://jht1493-gmail.github.io/jht-site/aa/media/colorized-jht_height=320&width=240.jpg';
@@ -29,6 +32,7 @@ function setup() {
   // Adjust height to keep image aspect ration
   let r = img.height / img.width;
   aheight = width * r;
+  ayoffset = (height - aheight) / 2;
 
   placeParticles();
   noStroke();
@@ -92,7 +96,7 @@ class Particle {
     // line(this.x, this.y, this.homeX, this.homeY);
     // noStroke();
     fill(this.c);
-    ellipse(this.x, this.y, res, res);
+    ellipse(this.x, this.y + ayoffset, res, res);
   }
 }
 
@@ -118,7 +122,7 @@ class Ball {
     // fill(this.color);
     let c = img_color_xy(this.x, this.y);
     fill(c);
-    circle(this.x, this.y, this.radius);
+    circle(this.x, this.y + ayoffset, this.radius);
   }
 }
 
