@@ -101,7 +101,7 @@ class Particle {
 class Ball {
   constructor(x_, y_, name_) {
     this.x = x_ || random(width);
-    this.y = y_ || random(height);
+    this.y = y_ || random(aheight);
     this.radius = res;
     this.speedX = 4;
     this.speedY = 2;
