@@ -1,3 +1,5 @@
+// https://editor.p5js.org/jht9629-nyu/sketches/584bCKj5G
+// ims04-video-particle
 // https://openprocessing.org/sketch/2911242
 // https://openprocessing.org/sketch/1685260
 // Particule, img, attraction, repulsion... by Richnou
@@ -8,7 +10,7 @@
 
 let particles = [];
 
-let res = 18;
+let res = 16;
 
 let img;
 
