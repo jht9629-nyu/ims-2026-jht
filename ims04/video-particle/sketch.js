@@ -20,6 +20,7 @@ let particles = [];
 let ball;
 let show_video = false;
 let show_pause = 2; // Wait show_pause seconds before switching to video
+let ball_move_noise = true;
 
 function preload() {
   let url = 'https://jht1493-gmail.github.io/jht-site/aa/media/colorized-jht_height=320&width=240.jpg';
@@ -55,6 +56,7 @@ function prepare_video() {
   let r = aimage.height / aimage.width;
   aheight = width * r;
   ayoffset = (height - aheight) / 2;
+
   placeParticles();
   ball.random_loc();
   show_video = true;
@@ -77,7 +79,8 @@ function draw() {
     particles[i].update();
     particles[i].draw();
   }
-  ball.move();
+  if (ball_move_noise) ball.move_noise();
+  else ball.move();
   ball.draw();
   // image(aimage, 0, 0, width, height);
 }
@@ -158,6 +161,12 @@ class Ball {
     if (this.x < 0) this.speedX = -this.speedX;
     if (this.y > aheight) this.speedY = -this.speedY;
     if (this.y < 0) this.speedY = -this.speedY;
+  }
+  move_noise() {
+    // https://p5js.org/reference/p5/noise/
+    // Calculate the coordinates.
+    this.x = width * noise(0.005 * frameCount);
+    this.y = aheight * noise(0.005 * frameCount + 10000);
   }
   draw() {
     // fill(this.color);
