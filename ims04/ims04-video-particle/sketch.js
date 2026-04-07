@@ -9,12 +9,10 @@
 // https://editor.p5js.org/BarneyCodes/sketches/
 
 let particles = [];
-
 let res = 12;
-
 let img;
-
 let ball;
+let aheight;
 
 function preload() {
   let url = 'https://jht1493-gmail.github.io/jht-site/aa/media/colorized-jht_height=320&width=240.jpg';
@@ -26,15 +24,19 @@ function preload() {
 }
 
 function setup() {
-  console.log('w h', img.width, img.height);
   createCanvas(windowWidth, windowHeight);
+
+  // Adjust height to keep image aspect ration
+  let r = img.height / img.width;
+  aheight = width * r;
+
   placeParticles();
   noStroke();
   ball = new Ball();
 }
 
 function draw() {
-  background(255);
+  background(0);
   for (let i = 0; i < particles.length; i++) {
     particles[i].update();
     particles[i].draw();
@@ -47,7 +49,7 @@ function draw() {
 // init particles arrary
 function placeParticles() {
   for (let x = 0; x < width; x += res) {
-    for (let y = 0; y < height; y += res) {
+    for (let y = 0; y < aheight; y += res) {
       // Pickup color from image
       let c = img_color_xy(x, y);
       // Non-white pixel gets added -- disabled
@@ -109,7 +111,7 @@ class Ball {
     this.y += this.speedY;
     if (this.x > width) this.speedX = -this.speedX;
     if (this.x < 0) this.speedX = -this.speedX;
-    if (this.y > height) this.speedY = -this.speedY;
+    if (this.y > aheight) this.speedY = -this.speedY;
     if (this.y < 0) this.speedY = -this.speedY;
   }
   draw() {
@@ -124,8 +126,7 @@ class Ball {
 function img_color_xy(cx, cy) {
   // map from canvas to image coordinates - fill
   let x = (cx / width) * img.width;
-  let y = (cy / height) * img.height;
-
+  let y = (cy / aheight) * img.height;
   let c = img.get(x, y);
   return c;
 }
