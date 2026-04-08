@@ -2,7 +2,7 @@
 // ims04-image-particle
 
 let particles = [];
-let res = 12;
+let res = 32;
 let img;
 let ball;
 let aheight; // canvas height adjust for image aspect ratio
@@ -78,7 +78,8 @@ class Particle {
   }
   draw() {
     fill(this.c);
-    ellipse(this.x, this.y + ayoffset, res, res);
+    // ellipse(this.x, this.y + ayoffset, res, res);
+    draw_shape(this.x, this.y + ayoffset, res);
   }
 }
 
@@ -105,14 +106,30 @@ class Ball {
     let c = img_color_xy(this.x, this.y);
     fill(c);
     // circle(this.x, this.y + ayoffset, this.radius);
-    // Square rotated 45 degrees (diamond shape)
-    push();
-    translate(this.x, this.y + ayoffset);
-    rotate(QUARTER_PI);
-    rectMode(CENTER);
-    rect(0, 0, this.radius, this.radius);
-    pop();
+    draw_shape(this.x, this.y + ayoffset, this.radius);
   }
+}
+
+// Square rotated 45 degrees (diamond shape)
+function draw_shape(x, y, size) {
+  // circle(this.x, this.y + ayoffset, this.radius);
+
+  // push();
+  // translate(x, y);
+  // rotate(QUARTER_PI);
+  // rectMode(CENTER);
+  // rect(0, 0, size, size);
+  // pop();
+
+  push();
+  translate(x, y);
+  beginShape();
+  for (let i = 0; i < 5; i++) {
+    let angle = (TWO_PI / 5) * i - HALF_PI;
+    vertex((cos(angle) * size) / 2, (sin(angle) * size) / 2);
+  }
+  endShape(CLOSE);
+  pop();
 }
 
 // Get image color corresponding to x,y on canvas
