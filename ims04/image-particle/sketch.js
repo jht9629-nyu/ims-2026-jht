@@ -37,13 +37,15 @@ function draw() {
   // image(img, 0, 0, width, height);
 }
 
-// init particles arrary - square grid layout (tiles with diamond shapes)
+// init particles arrary - offset grid layout (tiles edge-to-edge with diamond shapes)
 function placeParticles() {
   let r = res;
   let colSpacing = r * 2;
-  let rowSpacing = r * 2;
-  for (let x = r; x < width; x += colSpacing) {
-    for (let y = r; y < aheight; y += rowSpacing) {
+  let rowSpacing = r;
+  let row = 0;
+  for (let y = r; y < aheight; y += rowSpacing, row++) {
+    let xStart = row % 2 === 0 ? r : r * 2;
+    for (let x = xStart; x < width; x += colSpacing) {
       let c = img_color_xy(x, y);
       particles.push(new Particle(x, y, c));
     }
