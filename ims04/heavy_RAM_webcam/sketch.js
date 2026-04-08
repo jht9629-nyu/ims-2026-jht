@@ -1,6 +1,7 @@
 // https://editor.p5js.org/jht9629-nyu/sketches/OBYuc5crK
 // heavy RAM webcam v2
 /*
+- mobile friendly meta name="viewport"
 - use image CONTAIN to correct video aspect ratio
 - scale to full screen
 - video_ready call back need to get correct video size
