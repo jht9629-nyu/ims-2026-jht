@@ -2,7 +2,7 @@
 // ims04-image-particle
 
 let particles = [];
-let res = 12;
+let res = 16;
 let img;
 let ball;
 let aheight; // canvas height adjust for image aspect ratio
