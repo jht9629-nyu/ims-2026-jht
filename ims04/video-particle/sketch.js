@@ -8,7 +8,7 @@
   let homeAttraction = map(homeDistance, 0, 100, 0, 10);
 [] url params for options
 [] res proporational to screen size
-[] mobile friendly meta viewport
+[x] mobile friendly meta viewport
 */
 
 let res = 12; // size of fat pixel circle

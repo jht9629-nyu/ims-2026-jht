@@ -23,6 +23,7 @@
 
 - [sketch2911242-particles](ims04/sketch2911242-particles/index.html)
 - [image-particle](ims04/image-particle/index.html)
+  - no meta viewport
 - [video-particle](ims04/video-particle/index.html)
 
 ## Notes
