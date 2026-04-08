@@ -5,6 +5,8 @@
 // with a autonomous ball living in sketch
 // https://www.youtube.com/@BarneyCodes
 // https://editor.p5js.org/BarneyCodes/sketches/
+// https://m.youtube.com/watch?v=qm5cDNbtGig
+// Fixing The Coding Train’s Code (Water Ripple Shader)
 
 let particles = [];
 

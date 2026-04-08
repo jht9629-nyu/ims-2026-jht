@@ -29,11 +29,13 @@
 ## Notes
 
 ```
-
-[] video-particle --> media-particle and modularize
-
 https://openprocessing.org/sketch/2682081
 Marching Ripples by Kathy McGuiness
-
-
+--> ims04/sketch2911242-particles/mySketch.js
+// https://m.youtube.com/watch?v=qm5cDNbtGig
+// Fixing The Coding Train’s Code (Water Ripple Shader)
 ```
+
+## Plan
+
+- [] video-particle --> media-particle and modularize
