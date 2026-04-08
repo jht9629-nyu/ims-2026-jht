@@ -37,15 +37,13 @@ function draw() {
   // image(img, 0, 0, width, height);
 }
 
-// init particles arrary - hex grid layout
+// init particles arrary - square grid layout (tiles with diamond shapes)
 function placeParticles() {
   let r = res;
-  let colSpacing = r * 1.5;
-  let rowSpacing = r * sqrt(3);
-  let col = 0;
-  for (let x = r; x < width; x += colSpacing, col++) {
-    let yStart = col % 2 === 0 ? 0 : rowSpacing / 2;
-    for (let y = yStart; y < aheight; y += rowSpacing) {
+  let colSpacing = r * 2;
+  let rowSpacing = r * 2;
+  for (let x = r; x < width; x += colSpacing) {
+    for (let y = r; y < aheight; y += rowSpacing) {
       let c = img_color_xy(x, y);
       particles.push(new Particle(x, y, c));
     }
@@ -111,15 +109,15 @@ class Ball {
   }
 }
 
-// Flat-top hexagon (tiles with hex grid layout)
+// Diamond (tiles with square grid layout)
 function draw_shape(x, y, size) {
   push();
   translate(x, y);
   beginShape();
-  for (let i = 0; i < 6; i++) {
-    let angle = (i * PI) / 3; // 0, 60, 120, 180, 240, 300 deg
-    vertex(cos(angle) * size, sin(angle) * size);
-  }
+  vertex(0, -size);  // top
+  vertex(size, 0);   // right
+  vertex(0, size);   // bottom
+  vertex(-size, 0);  // left
   endShape(CLOSE);
   pop();
 }
