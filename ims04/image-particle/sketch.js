@@ -1,12 +1,5 @@
 // https://editor.p5js.org/jht9629-nyu/sketches/584bCKj5G
-// ims04-video-particle
-// https://openprocessing.org/sketch/2911242
-// https://openprocessing.org/sketch/1685260
-// Particule, img, attraction, repulsion... by Richnou
-// From https://editor.p5js.org/BarneyCodes/sketches/k0ImyGuo9
-// with a autonomous ball living in sketch
-// https://www.youtube.com/@BarneyCodes
-// https://editor.p5js.org/BarneyCodes/sketches/
+// ims04-image-particle
 
 let particles = [];
 let res = 12;
@@ -17,11 +10,7 @@ let ayoffset;
 
 function preload() {
   let url = 'https://jht1493-gmail.github.io/jht-site/aa/media/colorized-jht_height=320&width=240.jpg';
-  //   let url = 'richnou.png';
   img = loadImage(url);
-  // let url = "https://jht1493-gmail.github.io/jht-site/jht-facebo-md/media/2018-10-03/Timeline-Photos-DICE-pixel-facial.jpg";
-  // img = loadImage("https://jht1493.net/johnhenrythompson/home/IMG_5174.jpg");
-  // img = loadImage("https://img.att.ovh/2024.jpg");
 }
 
 function setup() {
@@ -88,11 +77,6 @@ class Particle {
     this.y += vy;
   }
   draw() {
-    // fill(0, 40);
-    // stroke(0, 40);
-    // ellipse(this.homeX, this.homeY, 5, 5);
-    // line(this.x, this.y, this.homeX, this.homeY);
-    // noStroke();
     fill(this.c);
     ellipse(this.x, this.y + ayoffset, res, res);
   }
@@ -132,3 +116,11 @@ function img_color_xy(cx, cy) {
   let c = img.get(x, y);
   return c;
 }
+
+// https://openprocessing.org/sketch/2911242
+// https://openprocessing.org/sketch/1685260
+// Particule, img, attraction, repulsion... by Richnou
+// From https://editor.p5js.org/BarneyCodes/sketches/k0ImyGuo9
+// with a autonomous ball living in sketch
+// https://www.youtube.com/@BarneyCodes
+// https://editor.p5js.org/BarneyCodes/sketches/

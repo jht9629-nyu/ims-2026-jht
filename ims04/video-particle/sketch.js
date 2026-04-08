@@ -1,14 +1,16 @@
 // https://editor.p5js.org/jht9629-nyu/sketches/TtVWUuKVC
 // ims04-video-particle
-// https://editor.p5js.org/jht9629-nyu/sketches/584bCKj5G
-// ims04-image-particle
-// https://openprocessing.org/sketch/2911242
-// https://openprocessing.org/sketch/1685260
-// Particule, img, attraction, repulsion... by Richnou
-// From https://editor.p5js.org/BarneyCodes/sketches/k0ImyGuo9
-// with a autonomous ball living in sketch
-// https://www.youtube.com/@BarneyCodes
-// https://editor.p5js.org/BarneyCodes/sketches/
+
+/*
+- plan
+[] adjust with sliders:
+  let ballRepulsion = constrain(map(ballDistance, 0, 100, 10, 0), 0, 10);
+  let homeAttraction = map(homeDistance, 0, 100, 0, 10);
+[] url params for options
+[] res proporational to screen size
+[] unify image-particle and video-particle and modularize
+[] mobile friendly meta viewport
+*/
 
 let res = 12; // size of fat pixel circle
 let aimage;
@@ -20,7 +22,7 @@ let particles = [];
 let ball;
 let show_video = false;
 let show_pause = 2; // Wait show_pause seconds before switching to video
-let ball_move_noise = true;
+let ball_move_noise = 0;
 
 function preload() {
   let url = 'https://jht1493-gmail.github.io/jht-site/aa/media/colorized-jht_height=320&width=240.jpg';
@@ -52,6 +54,7 @@ function video_ready() {
 
 function prepare_video() {
   aimage = avideo.get();
+
   // Adjust height to keep image aspect ration
   let r = aimage.height / aimage.width;
   aheight = width * r;
@@ -184,3 +187,13 @@ function img_color_xy(cx, cy) {
   let c = aimage.get(x, y);
   return c;
 }
+
+// https://editor.p5js.org/jht9629-nyu/sketches/584bCKj5G
+// ims04-image-particle
+// https://openprocessing.org/sketch/2911242
+// https://openprocessing.org/sketch/1685260
+// Particule, img, attraction, repulsion... by Richnou
+// From https://editor.p5js.org/BarneyCodes/sketches/k0ImyGuo9
+// with a autonomous ball living in sketch
+// https://www.youtube.com/@BarneyCodes
+// https://editor.p5js.org/BarneyCodes/sketches/
