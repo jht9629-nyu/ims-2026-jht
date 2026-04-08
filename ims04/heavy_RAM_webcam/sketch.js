@@ -10,7 +10,9 @@
 // https://editor.p5js.org/rafiiia/sketches/hOGUXUHzU
 
 let avideo;
-let layer;
+let alayer;
+let ndraw = 900; // number of pixels to draw big
+let draw_len = 10; // size of pixel shape
 
 function preload() {}
 
@@ -24,29 +26,30 @@ function setup() {
 
 function video_ready() {
   console.log('video_ready avideo.width', avideo.width, avideo.height);
-  layer = createGraphics(avideo.width, avideo.height);
-  layer.noStroke();
+  alayer = createGraphics(avideo.width, avideo.height);
+  alayer.noStroke();
 }
 
 function draw() {
   // console.log('avideo.width', avideo.width, avideo.height);
-  if (!layer) return;
+  if (!alayer) return;
   let aimage = avideo.get();
-  for (let i = 0; i < 900; i++) {
+  for (let i = 0; i < ndraw; i++) {
     draw_one(aimage);
   }
   // Draw the image and scale it to fit within the canvas.
-  image(layer, 0, 0, width, height, 0, 0, layer.width, layer.height, CONTAIN);
+  image(alayer, 0, 0, width, height, 0, 0, alayer.width, alayer.height, CONTAIN);
 }
 
 // https://p5js.org/reference/p5/image/
+// image(img, dx, dy, dWidth, dHeight, sx, sy, [sWidth], [sHeight], [fit], [xAlign], [yAlign])
 
-function draw_one(aimage) {
+function draw_one(img) {
   let x = random(0, avideo.width);
   let y = random(0, avideo.height);
 
-  let pixelColor = aimage.get(x, y); //get a single pixel
+  let pixelColor = img.get(x, y); //get a single pixel
 
-  layer.fill(pixelColor);
-  layer.circle(x, y, 10);
+  alayer.fill(pixelColor);
+  alayer.circle(x, y, draw_len);
 }
