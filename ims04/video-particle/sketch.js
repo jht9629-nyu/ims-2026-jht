@@ -8,7 +8,6 @@
   let homeAttraction = map(homeDistance, 0, 100, 0, 10);
 [] url params for options
 [] res proporational to screen size
-[] unify image-particle and video-particle and modularize
 [] mobile friendly meta viewport
 */
 
