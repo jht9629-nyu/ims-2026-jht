@@ -104,7 +104,14 @@ class Ball {
     // fill(this.color);
     let c = img_color_xy(this.x, this.y);
     fill(c);
-    circle(this.x, this.y + ayoffset, this.radius);
+    // circle(this.x, this.y + ayoffset, this.radius);
+    // Square rotated 45 degrees (diamond shape)
+    push();
+    translate(this.x, this.y + ayoffset);
+    rotate(QUARTER_PI);
+    rectMode(CENTER);
+    rect(0, 0, this.radius, this.radius);
+    pop();
   }
 }
 
