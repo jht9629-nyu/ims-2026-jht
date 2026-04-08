@@ -2,7 +2,7 @@
 // ims04-image-particle
 
 let particles = [];
-let res = 32;
+let res = 16;
 let img;
 let ball;
 let aheight; // canvas height adjust for image aspect ratio
@@ -37,16 +37,17 @@ function draw() {
   // image(img, 0, 0, width, height);
 }
 
-// init particles arrary
+// init particles arrary - hex grid layout
 function placeParticles() {
-  for (let x = 0; x < width; x += res) {
-    for (let y = 0; y < aheight; y += res) {
-      // Pickup color from image
+  let r = res;
+  let colSpacing = r * 1.5;
+  let rowSpacing = r * sqrt(3);
+  let col = 0;
+  for (let x = r; x < width; x += colSpacing, col++) {
+    let yStart = col % 2 === 0 ? 0 : rowSpacing / 2;
+    for (let y = yStart; y < aheight; y += rowSpacing) {
       let c = img_color_xy(x, y);
-      // Non-white pixel gets added -- disabled
-      // if (c[0] + c[1] + c[2] != 255 * 3) {
       particles.push(new Particle(x, y, c));
-      // }
     }
   }
 }
@@ -110,23 +111,14 @@ class Ball {
   }
 }
 
-// Square rotated 45 degrees (diamond shape)
+// Flat-top hexagon (tiles with hex grid layout)
 function draw_shape(x, y, size) {
-  // circle(this.x, this.y + ayoffset, this.radius);
-
-  // push();
-  // translate(x, y);
-  // rotate(QUARTER_PI);
-  // rectMode(CENTER);
-  // rect(0, 0, size, size);
-  // pop();
-
   push();
   translate(x, y);
   beginShape();
-  for (let i = 0; i < 5; i++) {
-    let angle = (TWO_PI / 5) * i - HALF_PI;
-    vertex((cos(angle) * size) / 2, (sin(angle) * size) / 2);
+  for (let i = 0; i < 6; i++) {
+    let angle = (i * PI) / 3; // 0, 60, 120, 180, 240, 300 deg
+    vertex(cos(angle) * size, sin(angle) * size);
   }
   endShape(CLOSE);
   pop();
