@@ -68,6 +68,8 @@ Then open http://localhost:5000.
 
 [2026-04-09T07:17:03.356Z] @firebase/firestore: Firestore (10.12.0): Uncaught Error in snapshot listener: FirebaseError: [code=failed-precondition]: The query requires an index. That index is currently building and cannot be used yet. See its status here: https://console.firebase.google.com/v1/r/project/fb-notes-7d54a/firestore/indexes?create_composite=Cldwcm9qZWN0cy9mYi1ub3Rlcy03ZDU0YS9kYXRhYmFzZXMvKGRlZmF1bHQpL2NvbGxlY3Rpb25Hcm91cHMvbm90ZXMvaW5kZXhlcy9DSUNBZ09qWGg0RUsQARoHCgN1aWQQARoNCgljcmVhdGVkQXQQAhoMCghfX25hbWVfXxAC
 
+- waited a few minutes for index
+
 **Note:** For Google sign-in to work locally, add `localhost` under Firebase console → Authentication → Settings → Authorized domains (it's usually there by default).
 
 ## 5. Deploy to Firebase Hosting
