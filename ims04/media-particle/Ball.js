@@ -1,5 +1,5 @@
 class Ball {
-  constructor(x_, y_, name_) {
+  constructor(x_, y_) {
     this.x = x_ || random(width);
     this.y = y_ || random(aheight);
     this.radius = res;
@@ -30,6 +30,7 @@ class Ball {
     // fill(this.color);
     let c = img_color_xy(this.x, this.y);
     fill(c);
-    circle(this.x, this.y + ayoffset, this.radius);
+    ashape.draw(this.x, this.y, this.radius);
+    // circle(this.x, this.y + ayoffset, this.radius);
   }
 }

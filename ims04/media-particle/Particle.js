@@ -28,6 +28,7 @@ class Particle {
   }
   draw() {
     fill(this.c);
-    ellipse(this.x, this.y + ayoffset, res, res);
+    ashape.draw(this.x, this.y, res);
+    // ellipse(this.x, this.y + ayoffset, res, res);
   }
 }
