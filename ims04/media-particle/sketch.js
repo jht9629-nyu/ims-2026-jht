@@ -31,16 +31,20 @@ function preload() {
 function setup() {
   createCanvas(windowWidth, windowHeight);
 
-  // Adjust height to keep image aspect ration
-  let r = aimage.height / aimage.width;
-  aheight = width * r;
-  ayoffset = (height - aheight) / 2;
+  adjust_height_aspect_ratio();
 
   placeParticles();
   noStroke();
   ball = new Ball();
 
   avideo = createCapture(VIDEO, video_ready);
+}
+
+// Adjust height to keep image aspect ration
+function adjust_height_aspect_ratio() {
+  let r = aimage.height / aimage.width;
+  aheight = width * r;
+  ayoffset = (height - aheight) / 2;
 }
 
 function video_ready() {
@@ -54,10 +58,7 @@ function video_ready() {
 function prepare_video() {
   aimage = avideo.get();
 
-  // Adjust height to keep image aspect ration
-  let r = aimage.height / aimage.width;
-  aheight = width * r;
-  ayoffset = (height - aheight) / 2;
+  adjust_height_aspect_ratio();
 
   placeParticles();
   ball.random_loc();
