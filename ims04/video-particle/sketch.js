@@ -11,7 +11,7 @@
 [x] mobile friendly meta viewport
 */
 
-let res = 12; // size of fat pixel circle
+let res = 16; // size of fat pixel circle
 let aimage;
 let aheight; // canvas height adjust for image aspect ratio
 let ayoffset;
