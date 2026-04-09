@@ -124,3 +124,10 @@ You'll get a live URL like `https://your-project.web.app`. Add that domain to Au
 - Swap `signInWithPopup` for `signInWithRedirect` (better on mobile)
 - Add email/password auth alongside Google
 - Add a `updatedAt` field and sort/filter options
+
+## Log
+
+- Swap `signInWithPopup` for `signInWithRedirect`
+- get failure GET https://fb-notes-7d54a.firebaseapp.com/__/firebase/init.json 404 (Not Found)
+
+- signInWithRedirect — it requires the app to be served from Firebase Hosting to resolve /\_\_/firebase/init.json.

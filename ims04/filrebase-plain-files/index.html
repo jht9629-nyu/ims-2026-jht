@@ -300,7 +300,8 @@
     import {
       getAuth,
       GoogleAuthProvider,
-      signInWithPopup,
+      signInWithRedirect,
+      getRedirectResult,
       signOut,
       onAuthStateChanged,
     } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
@@ -320,7 +321,7 @@
 
     const firebaseConfig = {
       apiKey: "AIzaSyCohdWaD0KOQUVbvEP3wSbZ31Bs98A8W9w",
-      authDomain: "fb-notes-7d54a.firebaseapp.com",
+      authDomain: "fb-notes-7d54a.web.app",
       projectId: "fb-notes-7d54a",
       storageBucket: "fb-notes-7d54a.firebasestorage.app",
       messagingSenderId: "1005580277834",
@@ -367,13 +368,16 @@
 
     // ── Auth ─────────────────────────────────────────────────────────────────
 
-    signinBtn.addEventListener("click", async () => {
-      try {
-        await signInWithPopup(auth, provider);
-      } catch (err) {
-        console.error("Sign-in failed:", err);
-        alert("Sign-in failed: " + err.message);
-      }
+    // Handle redirect result on page load
+    getRedirectResult(auth).then((result) => {
+      console.log("getRedirectResult:", result);
+    }).catch((err) => {
+      console.error("Redirect sign-in failed:", err);
+      alert("Sign-in failed: " + err.message);
+    });
+
+    signinBtn.addEventListener("click", () => {
+      signInWithRedirect(auth, provider);
     });
 
     signoutBtn.addEventListener("click", () => signOut(auth));
