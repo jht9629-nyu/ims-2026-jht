@@ -1,5 +1,7 @@
 notes.txt
 
+Hosting URL: https://fb-notes-7d54a.web.app
+
 # --
 2026-04-09 02:49:21
 
