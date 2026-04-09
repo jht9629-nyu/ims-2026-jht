@@ -157,7 +157,7 @@
       cursor: pointer;
       accent-color: var(--accent);
     }
-    #clear-canvas-btn { margin-left: auto; }
+    .toolbar-right { margin-left: auto; display: flex; gap: 0.5rem; }
     #draw-canvas {
       display: block;
       width: 100%;
@@ -173,6 +173,69 @@
       text-transform: uppercase;
       letter-spacing: 0.05em;
     }
+
+    /* Gallery */
+    .gallery-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 0.75rem;
+      margin-bottom: 1.5rem;
+    }
+    .gallery-item {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      overflow: hidden;
+    }
+    .gallery-item img {
+      width: 100%;
+      display: block;
+      aspect-ratio: 16 / 10;
+      object-fit: cover;
+      cursor: pointer;
+    }
+    .gallery-item img:hover { opacity: 0.9; }
+    .gallery-meta {
+      padding: 0.45rem 0.75rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .gallery-author { font-size: 0.75rem; color: var(--muted); }
+
+    /* Lightbox */
+    #lightbox {
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,0.85);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 100;
+    }
+    #lightbox img {
+      max-width: 92vw;
+      max-height: 88vh;
+      border-radius: 10px;
+      box-shadow: 0 8px 40px rgba(0,0,0,0.5);
+    }
+    #lightbox-close {
+      position: absolute;
+      top: 1rem;
+      right: 1rem;
+      background: rgba(255,255,255,0.15);
+      color: #fff;
+      border: none;
+      border-radius: 50%;
+      width: 36px;
+      height: 36px;
+      font-size: 1.1rem;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    #lightbox-close:hover { background: rgba(255,255,255,0.3); }
   </style>
 </head>
 <body>
@@ -198,10 +261,17 @@
         <div class="canvas-toolbar">
           <label>Color <input type="color" id="draw-color" value="#2563eb" /></label>
           <label>Size <input type="range" id="draw-size" min="1" max="24" value="4" /></label>
-          <button id="clear-canvas-btn" class="secondary">Clear all</button>
+          <div class="toolbar-right">
+            <button id="save-gallery-btn">Save to Gallery</button>
+            <button id="clear-canvas-btn" class="secondary">Clear all</button>
+          </div>
         </div>
         <canvas id="draw-canvas" height="400"></canvas>
       </div>
+
+      <!-- Gallery -->
+      <h2>Gallery</h2>
+      <div id="gallery-grid" class="gallery-grid"></div>
 
       <!-- Notes -->
       <h2>Shared Notes</h2>
@@ -213,8 +283,20 @@
     </div>
   </div>
 
+  <!-- Lightbox -->
+  <div id="lightbox" class="hidden">
+    <button id="lightbox-close">&#x2715;</button>
+    <img id="lightbox-img" src="" alt="Gallery image" />
+  </div>
+
   <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+    import {
+      getStorage,
+      ref as storageRef,
+      uploadString,
+      getDownloadURL,
+    } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-storage.js";
     import {
       getAuth,
       GoogleAuthProvider,
@@ -248,6 +330,7 @@
     const app = initializeApp(firebaseConfig);
     const auth = getAuth(app);
     const db = getFirestore(app);
+    const storage = getStorage(app);
     const provider = new GoogleAuthProvider();
 
     // DOM
@@ -263,14 +346,24 @@
     const notesList   = document.getElementById("notes-list");
 
     // Canvas DOM
-    const canvas      = document.getElementById("draw-canvas");
-    const ctx         = canvas.getContext("2d");
-    const colorPicker = document.getElementById("draw-color");
-    const sizePicker  = document.getElementById("draw-size");
-    const clearBtn    = document.getElementById("clear-canvas-btn");
+    const canvas         = document.getElementById("draw-canvas");
+    const ctx            = canvas.getContext("2d");
+    const colorPicker    = document.getElementById("draw-color");
+    const sizePicker     = document.getElementById("draw-size");
+    const clearBtn       = document.getElementById("clear-canvas-btn");
+    const saveGalleryBtn = document.getElementById("save-gallery-btn");
+    const galleryGrid    = document.getElementById("gallery-grid");
+
+    // Lightbox
+    const lightbox      = document.getElementById("lightbox");
+    const lightboxImg   = document.getElementById("lightbox-img");
+    const lightboxClose = document.getElementById("lightbox-close");
+    lightboxClose.addEventListener("click", () => lightbox.classList.add("hidden"));
+    lightbox.addEventListener("click", (e) => { if (e.target === lightbox) lightbox.classList.add("hidden"); });
 
     let unsubscribeNotes   = null;
     let unsubscribeStrokes = null;
+    let unsubscribeGallery = null;
 
     // ── Auth ─────────────────────────────────────────────────────────────────
 
@@ -294,6 +387,7 @@
         userName.textContent = user.displayName || user.email;
         initCanvas();
         subscribeToStrokes();
+        subscribeToGallery();
         subscribeToNotes(user.uid);
       } else {
         signinView.classList.remove("hidden");
@@ -303,6 +397,7 @@
         ctx.clearRect(0, 0, canvas.width, canvas.height);
         if (unsubscribeNotes)   { unsubscribeNotes();   unsubscribeNotes = null; }
         if (unsubscribeStrokes) { unsubscribeStrokes(); unsubscribeStrokes = null; }
+        if (unsubscribeGallery) { unsubscribeGallery(); unsubscribeGallery = null; }
       }
     });
 
@@ -458,6 +553,87 @@
         allStrokes = [];
         snapshot.forEach((d) => allStrokes.push(d.data()));
         redrawAll();
+      });
+    }
+
+    // ── Gallery ──────────────────────────────────────────────────────────────
+
+    saveGalleryBtn.addEventListener("click", async () => {
+      if (!auth.currentUser) return;
+      const user = auth.currentUser;
+      saveGalleryBtn.disabled = true;
+      saveGalleryBtn.textContent = "Saving...";
+      try {
+        const dataUrl = canvas.toDataURL("image/png");
+        const path = `gallery/${Date.now()}-${user.uid}.png`;
+        const imgRef = storageRef(storage, path);
+        await uploadString(imgRef, dataUrl, "data_url");
+        const url = await getDownloadURL(imgRef);
+        await addDoc(collection(db, "gallery"), {
+          url,
+          path,
+          uid   : user.uid,
+          author: user.displayName || user.email,
+          createdAt: serverTimestamp(),
+        });
+      } catch (err) {
+        console.error("Gallery save failed:", err);
+        alert("Could not save to gallery: " + err.message);
+      } finally {
+        saveGalleryBtn.disabled = false;
+        saveGalleryBtn.textContent = "Save to Gallery";
+      }
+    });
+
+    function subscribeToGallery() {
+      const q = query(collection(db, "gallery"), orderBy("createdAt", "desc"));
+      unsubscribeGallery = onSnapshot(q, (snapshot) => {
+        if (snapshot.empty) {
+          galleryGrid.innerHTML = '<div class="empty" style="grid-column:1/-1">No saves yet.</div>';
+          return;
+        }
+        galleryGrid.innerHTML = "";
+        snapshot.forEach((docSnap) => {
+          const item = docSnap.data();
+          const uid  = auth.currentUser?.uid;
+
+          const card = document.createElement("div");
+          card.className = "gallery-item";
+
+          const img = document.createElement("img");
+          img.src = item.url;
+          img.alt = `Canvas by ${item.author}`;
+          img.addEventListener("click", () => {
+            lightboxImg.src = item.url;
+            lightbox.classList.remove("hidden");
+          });
+
+          const meta = document.createElement("div");
+          meta.className = "gallery-meta";
+
+          const author = document.createElement("span");
+          author.className = "gallery-author";
+          author.textContent = item.author || "Anonymous";
+          meta.appendChild(author);
+
+          if (item.uid === uid) {
+            const delBtn = document.createElement("button");
+            delBtn.className = "danger";
+            delBtn.textContent = "Delete";
+            delBtn.addEventListener("click", async () => {
+              try {
+                await deleteDoc(doc(db, "gallery", docSnap.id));
+              } catch (err) {
+                alert("Could not delete: " + err.message);
+              }
+            });
+            meta.appendChild(delBtn);
+          }
+
+          card.appendChild(img);
+          card.appendChild(meta);
+          galleryGrid.appendChild(card);
+        });
       });
     }
 
