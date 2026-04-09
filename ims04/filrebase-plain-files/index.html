@@ -111,6 +111,7 @@
       margin-bottom: 0.5rem;
     }
     .note-text { flex: 1; word-break: break-word; }
+    .note-author { font-size: 0.75rem; color: var(--muted); margin-top: 0.25rem; }
     .empty {
       text-align: center;
       color: var(--muted);
@@ -160,7 +161,6 @@
       deleteDoc,
       doc,
       query,
-      where,
       orderBy,
       onSnapshot,
       serverTimestamp,
@@ -238,6 +238,7 @@ const firebaseConfig = {
         await addDoc(collection(db, "notes"), {
           text,
           uid: auth.currentUser.uid,
+          author: auth.currentUser.displayName || auth.currentUser.email,
           createdAt: serverTimestamp(),
         });
         noteInput.value = "";
@@ -247,11 +248,10 @@ const firebaseConfig = {
       }
     });
 
-    // Firestore: live subscription to current user's notes
+    // Firestore: live subscription to ALL notes (shared across users)
     function subscribeToNotes(uid) {
       const q = query(
         collection(db, "notes"),
-        where("uid", "==", uid),
         orderBy("createdAt", "desc")
       );
       unsubscribeNotes = onSnapshot(q, (snapshot) => {
@@ -264,15 +264,25 @@ const firebaseConfig = {
           const note = docSnap.data();
           const row = document.createElement("div");
           row.className = "note";
+          const textWrap = document.createElement("div");
+          textWrap.style.flex = "1";
           const text = document.createElement("div");
           text.className = "note-text";
           text.textContent = note.text;
-          const delBtn = document.createElement("button");
-          delBtn.className = "danger";
-          delBtn.textContent = "Delete";
-          delBtn.addEventListener("click", () => deleteDoc(doc(db, "notes", docSnap.id)));
-          row.appendChild(text);
-          row.appendChild(delBtn);
+          const author = document.createElement("div");
+          author.className = "note-author";
+          author.textContent = note.author || "Anonymous";
+          textWrap.appendChild(text);
+          textWrap.appendChild(author);
+          row.appendChild(textWrap);
+          // Only the note's owner can delete it
+          if (note.uid === uid) {
+            const delBtn = document.createElement("button");
+            delBtn.className = "danger";
+            delBtn.textContent = "Delete";
+            delBtn.addEventListener("click", () => deleteDoc(doc(db, "notes", docSnap.id)));
+            row.appendChild(delBtn);
+          }
           notesList.appendChild(row);
         });
       });

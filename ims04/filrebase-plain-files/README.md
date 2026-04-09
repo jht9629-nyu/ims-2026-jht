@@ -70,6 +70,20 @@ Then open http://localhost:5000.
 
 - waited a few minutes for index
 
+- show all and allow deletes
+
+```
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    match /notes/{noteId} {
+      allow read, create: if request.auth != null;
+      allow delete: if request.auth != null && request.auth.uid == resource.data.uid;
+    }
+  }
+}
+```
+
 **Note:** For Google sign-in to work locally, add `localhost` under Firebase console → Authentication → Settings → Authorized domains (it's usually there by default).
 
 ## 5. Deploy to Firebase Hosting
