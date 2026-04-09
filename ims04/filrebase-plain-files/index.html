@@ -63,7 +63,7 @@
       color: var(--muted);
       border: 1px solid var(--border);
     }
-    button.secondary:hover { background: var(--border); }
+    button.secondary:hover { background: var(--border); color: var(--text); }
     button.danger {
       background: transparent;
       color: var(--danger);
@@ -88,7 +88,7 @@
       gap: 0.5rem;
       margin-bottom: 1.5rem;
     }
-    input {
+    input[type="text"] {
       flex: 1;
       padding: 0.6rem 0.9rem;
       border: 1px solid var(--border);
@@ -96,7 +96,7 @@
       font: inherit;
       background: var(--card);
     }
-    input:focus {
+    input[type="text"]:focus {
       outline: none;
       border-color: var(--accent);
     }
@@ -118,6 +118,61 @@
       padding: 2rem;
     }
     .hidden { display: none !important; }
+
+    /* Canvas */
+    .canvas-card {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      overflow: hidden;
+      margin-bottom: 1.5rem;
+    }
+    .canvas-toolbar {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      padding: 0.65rem 1rem;
+      border-bottom: 1px solid var(--border);
+      flex-wrap: wrap;
+    }
+    .canvas-toolbar label {
+      display: flex;
+      align-items: center;
+      gap: 0.4rem;
+      font-size: 0.85rem;
+      color: var(--muted);
+      cursor: pointer;
+    }
+    .canvas-toolbar input[type="color"] {
+      width: 28px;
+      height: 28px;
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      padding: 1px;
+      cursor: pointer;
+      background: none;
+    }
+    .canvas-toolbar input[type="range"] {
+      width: 80px;
+      cursor: pointer;
+      accent-color: var(--accent);
+    }
+    #clear-canvas-btn { margin-left: auto; }
+    #draw-canvas {
+      display: block;
+      width: 100%;
+      cursor: crosshair;
+      touch-action: none;
+      background: #fff;
+    }
+    h2 {
+      font-size: 1rem;
+      font-weight: 600;
+      margin: 0 0 0.75rem;
+      color: var(--muted);
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
   </style>
 </head>
 <body>
@@ -137,6 +192,19 @@
     </div>
 
     <div id="app-view" class="hidden">
+      <!-- Shared canvas -->
+      <h2>Shared Canvas</h2>
+      <div class="canvas-card">
+        <div class="canvas-toolbar">
+          <label>Color <input type="color" id="draw-color" value="#2563eb" /></label>
+          <label>Size <input type="range" id="draw-size" min="1" max="24" value="4" /></label>
+          <button id="clear-canvas-btn" class="secondary">Clear all</button>
+        </div>
+        <canvas id="draw-canvas" height="400"></canvas>
+      </div>
+
+      <!-- Notes -->
+      <h2>Shared Notes</h2>
       <form id="note-form">
         <input id="note-input" type="text" placeholder="Write a note..." required />
         <button type="submit">Add</button>
@@ -159,23 +227,23 @@
       collection,
       addDoc,
       deleteDoc,
+      getDocs,
       doc,
       query,
       orderBy,
       onSnapshot,
       serverTimestamp,
+      writeBatch,
     } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
 
-    // 🔧 REPLACE THIS with your Firebase config from the console
-// Your web app's Firebase configuration
-const firebaseConfig = {
-  apiKey: "AIzaSyCohdWaD0KOQUVbvEP3wSbZ31Bs98A8W9w",
-  authDomain: "fb-notes-7d54a.firebaseapp.com",
-  projectId: "fb-notes-7d54a",
-  storageBucket: "fb-notes-7d54a.firebasestorage.app",
-  messagingSenderId: "1005580277834",
-  appId: "1:1005580277834:web:54cc48f167414dcbb7eeb3"
-};
+    const firebaseConfig = {
+      apiKey: "AIzaSyCohdWaD0KOQUVbvEP3wSbZ31Bs98A8W9w",
+      authDomain: "fb-notes-7d54a.firebaseapp.com",
+      projectId: "fb-notes-7d54a",
+      storageBucket: "fb-notes-7d54a.firebasestorage.app",
+      messagingSenderId: "1005580277834",
+      appId: "1:1005580277834:web:54cc48f167414dcbb7eeb3"
+    };
 
     const app = initializeApp(firebaseConfig);
     const auth = getAuth(app);
@@ -183,20 +251,29 @@ const firebaseConfig = {
     const provider = new GoogleAuthProvider();
 
     // DOM
-    const signinView = document.getElementById("signin-view");
-    const appView = document.getElementById("app-view");
-    const userInfo = document.getElementById("user-info");
-    const userAvatar = document.getElementById("user-avatar");
-    const userName = document.getElementById("user-name");
-    const signinBtn = document.getElementById("signin-btn");
-    const signoutBtn = document.getElementById("signout-btn");
-    const noteForm = document.getElementById("note-form");
-    const noteInput = document.getElementById("note-input");
-    const notesList = document.getElementById("notes-list");
+    const signinView  = document.getElementById("signin-view");
+    const appView     = document.getElementById("app-view");
+    const userInfo    = document.getElementById("user-info");
+    const userAvatar  = document.getElementById("user-avatar");
+    const userName    = document.getElementById("user-name");
+    const signinBtn   = document.getElementById("signin-btn");
+    const signoutBtn  = document.getElementById("signout-btn");
+    const noteForm    = document.getElementById("note-form");
+    const noteInput   = document.getElementById("note-input");
+    const notesList   = document.getElementById("notes-list");
 
-    let unsubscribeNotes = null;
+    // Canvas DOM
+    const canvas      = document.getElementById("draw-canvas");
+    const ctx         = canvas.getContext("2d");
+    const colorPicker = document.getElementById("draw-color");
+    const sizePicker  = document.getElementById("draw-size");
+    const clearBtn    = document.getElementById("clear-canvas-btn");
 
-    // Auth handlers
+    let unsubscribeNotes   = null;
+    let unsubscribeStrokes = null;
+
+    // ── Auth ─────────────────────────────────────────────────────────────────
+
     signinBtn.addEventListener("click", async () => {
       try {
         await signInWithPopup(auth, provider);
@@ -208,7 +285,6 @@ const firebaseConfig = {
 
     signoutBtn.addEventListener("click", () => signOut(auth));
 
-    // Auth state → show/hide views, subscribe to notes
     onAuthStateChanged(auth, (user) => {
       if (user) {
         signinView.classList.add("hidden");
@@ -216,20 +292,22 @@ const firebaseConfig = {
         userInfo.classList.remove("hidden");
         userAvatar.src = user.photoURL || "";
         userName.textContent = user.displayName || user.email;
+        initCanvas();
+        subscribeToStrokes();
         subscribeToNotes(user.uid);
       } else {
         signinView.classList.remove("hidden");
         appView.classList.add("hidden");
         userInfo.classList.add("hidden");
         notesList.innerHTML = "";
-        if (unsubscribeNotes) {
-          unsubscribeNotes();
-          unsubscribeNotes = null;
-        }
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        if (unsubscribeNotes)   { unsubscribeNotes();   unsubscribeNotes = null; }
+        if (unsubscribeStrokes) { unsubscribeStrokes(); unsubscribeStrokes = null; }
       }
     });
 
-    // Firestore: add note
+    // ── Notes ────────────────────────────────────────────────────────────────
+
     noteForm.addEventListener("submit", async (e) => {
       e.preventDefault();
       const text = noteInput.value.trim();
@@ -248,12 +326,8 @@ const firebaseConfig = {
       }
     });
 
-    // Firestore: live subscription to ALL notes (shared across users)
     function subscribeToNotes(uid) {
-      const q = query(
-        collection(db, "notes"),
-        orderBy("createdAt", "desc")
-      );
+      const q = query(collection(db, "notes"), orderBy("createdAt", "desc"));
       unsubscribeNotes = onSnapshot(q, (snapshot) => {
         if (snapshot.empty) {
           notesList.innerHTML = '<div class="empty">No notes yet. Add one above.</div>';
@@ -266,16 +340,15 @@ const firebaseConfig = {
           row.className = "note";
           const textWrap = document.createElement("div");
           textWrap.style.flex = "1";
-          const text = document.createElement("div");
-          text.className = "note-text";
-          text.textContent = note.text;
-          const author = document.createElement("div");
-          author.className = "note-author";
-          author.textContent = note.author || "Anonymous";
-          textWrap.appendChild(text);
-          textWrap.appendChild(author);
+          const textEl = document.createElement("div");
+          textEl.className = "note-text";
+          textEl.textContent = note.text;
+          const authorEl = document.createElement("div");
+          authorEl.className = "note-author";
+          authorEl.textContent = note.author || "Anonymous";
+          textWrap.appendChild(textEl);
+          textWrap.appendChild(authorEl);
           row.appendChild(textWrap);
-          // Only the note's owner can delete it
           if (note.uid === uid) {
             const delBtn = document.createElement("button");
             delBtn.className = "danger";
@@ -287,6 +360,120 @@ const firebaseConfig = {
         });
       });
     }
+
+    // ── Canvas ───────────────────────────────────────────────────────────────
+
+    let allStrokes = []; // [{points, color, width}] sorted by createdAt
+    let isDrawing  = false;
+    let currentPts = [];
+
+    function initCanvas() {
+      canvas.width = canvas.offsetWidth;
+      redrawAll();
+    }
+
+    window.addEventListener("resize", () => {
+      canvas.width = canvas.offsetWidth;
+      redrawAll();
+    });
+
+    function redrawAll() {
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      for (const s of allStrokes) paintStroke(s);
+    }
+
+    // Points are stored as normalized [0,1] fractions so strokes look right
+    // at any canvas width/height.
+    function paintStroke(stroke) {
+      const pts = stroke.points;
+      if (!pts || pts.length < 2) return;
+      ctx.beginPath();
+      ctx.strokeStyle = stroke.color;
+      ctx.lineWidth   = stroke.width;
+      ctx.lineCap     = "round";
+      ctx.lineJoin    = "round";
+      ctx.moveTo(pts[0].x * canvas.width, pts[0].y * canvas.height);
+      for (let i = 1; i < pts.length; i++) {
+        ctx.lineTo(pts[i].x * canvas.width, pts[i].y * canvas.height);
+      }
+      ctx.stroke();
+    }
+
+    function getPos(e) {
+      const r = canvas.getBoundingClientRect();
+      const src = e.touches ? e.touches[0] : e;
+      return {
+        x: (src.clientX - r.left) / canvas.width,
+        y: (src.clientY - r.top)  / canvas.height,
+      };
+    }
+
+    function startDraw(e) {
+      if (!auth.currentUser) return;
+      e.preventDefault();
+      isDrawing  = true;
+      currentPts = [getPos(e)];
+    }
+
+    function moveDraw(e) {
+      if (!isDrawing) return;
+      e.preventDefault();
+      const pt = getPos(e);
+      currentPts.push(pt);
+      // Live preview
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      redrawAll();
+      paintStroke({ points: currentPts, color: colorPicker.value, width: +sizePicker.value });
+    }
+
+    async function endDraw(e) {
+      if (!isDrawing) return;
+      isDrawing = false;
+      if (currentPts.length < 2) return;
+      try {
+        await addDoc(collection(db, "strokes"), {
+          points   : currentPts,
+          color    : colorPicker.value,
+          width    : +sizePicker.value,
+          uid      : auth.currentUser.uid,
+          createdAt: serverTimestamp(),
+        });
+      } catch (err) {
+        console.error("Stroke save failed:", err);
+      }
+      currentPts = [];
+    }
+
+    canvas.addEventListener("mousedown",  startDraw);
+    canvas.addEventListener("mousemove",  moveDraw);
+    canvas.addEventListener("mouseup",    endDraw);
+    canvas.addEventListener("mouseleave", endDraw);
+    canvas.addEventListener("touchstart", startDraw, { passive: false });
+    canvas.addEventListener("touchmove",  moveDraw,  { passive: false });
+    canvas.addEventListener("touchend",   endDraw);
+
+    function subscribeToStrokes() {
+      const q = query(collection(db, "strokes"), orderBy("createdAt", "asc"));
+      unsubscribeStrokes = onSnapshot(q, (snapshot) => {
+        allStrokes = [];
+        snapshot.forEach((d) => allStrokes.push(d.data()));
+        redrawAll();
+      });
+    }
+
+    clearBtn.addEventListener("click", async () => {
+      if (!auth.currentUser) return;
+      if (!confirm("Clear the entire canvas for everyone?")) return;
+      try {
+        const snap = await getDocs(collection(db, "strokes"));
+        const batch = writeBatch(db);
+        snap.forEach((d) => batch.delete(d.ref));
+        await batch.commit();
+      } catch (err) {
+        console.error("Clear failed:", err);
+        alert("Could not clear canvas: " + err.message);
+      }
+    });
   </script>
 </body>
 </html>
