@@ -34,7 +34,8 @@ function setup() {
 
   adjust_height_aspect_ratio();
 
-  ashape = CircleShape;
+  // ashape = CircleShape;
+  ashape = HexShape;
   ashape.placeParticles();
 
   noStroke();
