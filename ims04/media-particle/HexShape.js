@@ -3,7 +3,7 @@ let HexShape = {
   // init particles arrary for circles
   placeParticles() {
     particles = [];
-    let r = res;
+    let r = cellSize;
     let colSpacing = r * 1.5;
     let rowSpacing = r * sqrt(3);
     let col = 0;
@@ -17,7 +17,7 @@ let HexShape = {
   },
   draw(x, y, size) {
     push();
-    translate(x, y);
+    translate(x, y + ayoffset);
     beginShape();
     for (let i = 0; i < 6; i++) {
       let angle = (i * PI) / 3; // 0, 60, 120, 180, 240, 300 deg

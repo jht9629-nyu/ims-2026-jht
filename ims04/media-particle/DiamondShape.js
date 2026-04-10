@@ -1,9 +1,9 @@
 //
-let DiamonShape = {
+let DiamondShape = {
   // init particles arrary for circles
   placeParticles() {
     particles = [];
-    let r = res;
+    let r = cellSize;
     let colSpacing = r * 2;
     let rowSpacing = r;
     let row = 0;
@@ -17,7 +17,7 @@ let DiamonShape = {
   },
   draw(x, y, size) {
     push();
-    translate(x, y);
+    translate(x, y + ayoffset);
     beginShape();
     vertex(0, -size); // top
     vertex(size, 0); // right

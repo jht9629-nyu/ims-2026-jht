@@ -2,7 +2,7 @@ class Ball {
   constructor(x_, y_) {
     this.x = x_ || random(width);
     this.y = y_ || random(aheight);
-    this.radius = res;
+    this.radius = cellSize;
     this.speedX = 4;
     this.speedY = 2;
     this.color = '#DD0000';

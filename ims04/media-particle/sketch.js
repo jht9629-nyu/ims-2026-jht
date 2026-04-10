@@ -11,18 +11,20 @@
 [x] mobile friendly meta viewport
 */
 
-let res = 16; // size of fat pixel circle
-let aimage;
+let cellSize = 16; // size of fat pixel circle
 let aheight; // canvas height adjust for image aspect ratio
+let show_pause = 2; // Wait show_pause seconds before switching to video
+let step_pause = 5; // seconds between shape changes
+let aimage;
 let ayoffset;
 let avideo;
-// let alayer;
 let particles = [];
 let ball;
 let show_video = false;
-let show_pause = 2; // Wait show_pause seconds before switching to video
 let ball_move_noise = 0;
 let ashape;
+let shapes = [CircleShape, HexShape, DiamondShape];
+let shapeIndex = 0;
 
 function preload() {
   let url = 'https://jht1493-gmail.github.io/jht-site/aa/media/colorized-jht_height=320&width=240.jpg';
@@ -36,7 +38,7 @@ function setup() {
 
   // ashape = CircleShape;
   // ashape = HexShape;
-  ashape = DiamonShape;
+  ashape = DiamondShape;
   ashape.placeParticles();
 
   noStroke();
@@ -54,8 +56,6 @@ function adjust_height_aspect_ratio() {
 
 function video_ready() {
   console.log('video_ready avideo.width', avideo.width, avideo.height);
-  // alayer = createGraphics(avideo.width, avideo.height);
-  // alayer.noStroke();
   // Wait show_pause seconds before switching to video
   setTimeout(prepare_video, show_pause * 1000);
 }
@@ -70,10 +70,20 @@ function prepare_video() {
   ball.random_loc();
 
   show_video = true;
+
+  setInterval(next_shape, step_pause * 1000);
 }
 
+// https://developer.mozilla.org/en-US/docs/Web/API/Window/setInterval
 // https://developer.mozilla.org/en-US/docs/Web/API/Window/setTimeout
 // setTimeout(func, delay-milliseconds)
+
+function next_shape() {
+  console.log('next_shape', shapeIndex);
+  shapeIndex = (shapeIndex + 1) % shapes.length;
+  ashape = shapes[shapeIndex];
+  ashape.placeParticles();
+}
 
 function draw() {
   background(0);

@@ -25,6 +25,7 @@
 - [image-particle](ims04/image-particle/index.html)
   - no meta viewport
 - [video-particle](ims04/video-particle/index.html)
+- [media-particle](ims04/media-particle/index.html)
 
 ## Notes
 
@@ -34,8 +35,9 @@ Marching Ripples by Kathy McGuiness
 --> ims04/sketch2911242-particles/mySketch.js
 // https://m.youtube.com/watch?v=qm5cDNbtGig
 // Fixing The Coding Train’s Code (Water Ripple Shader)
+
+media-particles DiamondShape and HexShape from Claude AI
+
 ```
 
 ## Plan
-
-- [] video-particle --> media-particle and modularize
