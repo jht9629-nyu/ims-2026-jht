@@ -35,7 +35,8 @@ function setup() {
   adjust_height_aspect_ratio();
 
   // ashape = CircleShape;
-  ashape = HexShape;
+  // ashape = HexShape;
+  ashape = DiamonShape;
   ashape.placeParticles();
 
   noStroke();
