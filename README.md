@@ -26,6 +26,7 @@
   - no meta viewport
 - [video-particle](ims04/video-particle/index.html)
 - [media-particle](ims04/media-particle/index.html)
+- [ims03-Arial](ims04/ims03-Arial/index.html)
 
 ## Notes
 
