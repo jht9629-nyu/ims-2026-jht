@@ -42,6 +42,9 @@ media-particles DiamondShape and HexShape from Claude AI
 
 ## Plan
 
+- media-particles smoother transition
+
 ## Changes
 
+- 2026-04-10 08:03:44
 - media-particles start with CircleShape
