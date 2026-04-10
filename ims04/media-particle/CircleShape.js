@@ -1,7 +1,7 @@
 //
 let CircleShape = {
   // init particles arrary for circles
-  placeParticles: () => {
+  placeParticles() {
     particles = [];
     for (let x = 0; x < width; x += res) {
       for (let y = 0; y < aheight; y += res) {
@@ -11,7 +11,7 @@ let CircleShape = {
       }
     }
   },
-  draw: (x, y, r) => {
+  draw(x, y, r) {
     // ellipse(this.x, this.y + ayoffset, res, res);
     circle(x, y + ayoffset, r);
   },

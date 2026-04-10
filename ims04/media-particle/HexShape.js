@@ -1,7 +1,7 @@
 //
 let HexShape = {
   // init particles arrary for circles
-  placeParticles: () => {
+  placeParticles() {
     particles = [];
     let r = res;
     let colSpacing = r * 1.5;
@@ -15,7 +15,7 @@ let HexShape = {
       }
     }
   },
-  draw: (x, y, size) => {
+  draw(x, y, size) {
     push();
     translate(x, y);
     beginShape();
