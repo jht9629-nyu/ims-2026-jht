@@ -38,7 +38,7 @@ function setup() {
 
   // ashape = CircleShape;
   // ashape = HexShape;
-  ashape = DiamondShape;
+  ashape = shapes[0];
   ashape.placeParticles();
 
   noStroke();
