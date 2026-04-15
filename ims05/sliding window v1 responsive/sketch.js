@@ -2,6 +2,8 @@
 // https://editor.p5js.org/leey611/sketches/Lx5rz9R6T
 // sliding window v1 responsive horizontal two hands copy
 /* 
+- windowGraphic does not appear to be needed
+
 5000
 🌸 p5.js says: Expected Image or Element or Texture or Framebuffer 
 or FramebufferTexture at the first parameter in image(). 
@@ -10,7 +12,6 @@ or FramebufferTexture at the first parameter in image().
 let video;
 let handPose;
 let hands = [];
-// let painting;
 let windowGraphic;
 let window_left = 200;
 let window_right = 360;
@@ -35,7 +36,7 @@ async function setup() {
 
   video = createCapture(VIDEO, { flipped: true }, capture_ready_callback);
   // video.size(1920, 1080);
-  video.hide();
+  // video.hide();
 
   setup_fullScreenBtn();
 }
@@ -58,9 +59,6 @@ function capture_ready_callback() {
   shaderGraphic = createGraphics(w, h, WEBGL);
   shaderGraphic.clear();
 
-  // painting = createGraphics(w, h);
-  // painting.clear();
-
   windowGraphic = createGraphics(w, h);
   windowGraphic.clear();
 
@@ -69,12 +67,9 @@ function capture_ready_callback() {
 
 function draw() {
   if (!shaderGraphic) return;
-  // image(video, 0, 0);
 
   let w = video.width;
   let h = video.height;
-
-  // shaderGraphic.image(video, 0, 0);
 
   shaderGraphic.shader(myShader);
 
@@ -87,9 +82,7 @@ function draw() {
 
   windowGraphic.clear();
   if (hands.length > 0) {
-    for(let i = 0; i < 2; i++) {
-      
-    
+    for (let i = 0; i < 2; i++) {
       let hand = hands[i];
       if (hand && hand.index_finger_tip && hand.thumb_tip) {
         let index = hand.index_finger_tip;
@@ -107,16 +100,15 @@ function draw() {
         }
         // prevent window close
         if (abs(window_right - window_left) < 10) {
-          window_left = 200
-          window_right = 360
+          window_left = 200;
+          window_right = 360;
         }
         px = x;
         py = y;
-        }
-      
       }
     }
-  
+  }
+
   // windowGraphic.line(window_left, 0, window_left, h);
   // windowGraphic.line(window_right, 0, window_right, h);
 
@@ -125,12 +117,11 @@ function draw() {
   let w2 = width;
   let h2 = height;
   // w2 = h2 * ( h / w)
-  h2 = w2 * (h / w)
+  h2 = w2 * (h / w);
   image(shaderGraphic, 0, 0, w2, h2, 0, 0, w, h);
-  
-  // image(painting, 0, 0);
-  // draw two line on window border
-  image(windowGraphic, 0, 0, w2, h2, 0, 0, w, h);
+
+  // !!@ is this needed?
+  // image(windowGraphic, 0, 0, w2, h2, 0, 0, w, h);
 
   my.fpsSpan.html(framesPerSecond());
 }
@@ -161,7 +152,6 @@ function setup_fullScreenBtn() {
   my.fullScreenBtn.style('font-size:42px');
   // my.fullScreenBtn.style('position: absolute');
   // my.fullScreenBtn.style('bottom: 200px');
-  
 
   my.fpsSpan = createSpan('');
   my.fpsSpan.style('font-size:42px');
@@ -191,4 +181,3 @@ function ui_present_window() {
 
 // https://editor.p5js.org/leey611/sketches/yzRvaE7Da
 // sliding window v0
-
