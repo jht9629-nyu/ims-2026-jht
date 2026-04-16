@@ -32,22 +32,19 @@ function setup() {
   setup_fullScreenBtn();
 }
 
-function mousePressed() {
-  console.log(hands);
-  setTimeout(() => save('emitter.png'), 2000);
-}
+// function mousePressed() {
+//   console.log(hands);
+//   setTimeout(() => save('emitter.png'), 2000);
+// }
 
 function gotHands(results) {
   hands = results;
 }
 
 function capture_ready_callback() {
-  //
   console.log('capture_ready_callback width', video.width, video.height);
-  let w = video.width;
-  let h = video.height;
 
-  shaderGraphic = createGraphics(w, h, WEBGL);
+  shaderGraphic = createGraphics(video.width, video.height, WEBGL);
   shaderGraphic.clear();
 
   // handPose.detectStart(video, gotHands);
