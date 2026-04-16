@@ -1,0 +1,167 @@
+// https://editor.p5js.org/jht9629-nyu/sketches/l--iDtUbG
+// ims-05-video shader
+// removed handPose, prep for p5video plugin
+
+let video;
+// let handPose;
+// let hands = [];
+// let painting;
+// let windowGraphic;
+let window_left = 360;
+let window_right = 360;
+let shaderGraphic;
+let myShader;
+// let px = 0;
+// let py = 0;
+let my = {};
+
+function preload() {
+  // handPose = ml5.handPose({ flipped: true, runtime: 'mediapipe' });
+  myShader = loadShader('shader.vert', 'shader-effect.frag');
+  // myShader = loadShader('shader.vert', 'shader.frag');
+}
+
+function setup() {
+  // handPose = await ml5.handPose({ flipped: true, runtime: 'mediapipe' });
+  // myShader = await loadShader('shader.vert', 'shader-effect.frag');
+  createCanvas(windowWidth, windowHeight);
+
+  // createCanvas(640, 480);
+
+  video = createCapture(VIDEO, { flipped: true }, capture_ready_callback);
+  // video.size(1920, 1080);
+  video.hide();
+
+  setup_fullScreenBtn();
+}
+
+function mousePressed() {
+  console.log(hands);
+  setTimeout(() => save('emitter.png'), 2000);
+}
+
+function gotHands(results) {
+  hands = results;
+}
+
+function capture_ready_callback() {
+  //
+  console.log('capture_ready_callback width', video.width, video.height);
+  let w = video.width;
+  let h = video.height;
+
+  shaderGraphic = createGraphics(w, h, WEBGL);
+  shaderGraphic.clear();
+
+  // windowGraphic = createGraphics(w, h);
+  // windowGraphic.clear();
+
+  // handPose.detectStart(video, gotHands);
+}
+
+function draw() {
+  if (!shaderGraphic) return;
+  // image(video, 0, 0);
+
+  let w = video.width;
+  let h = video.height;
+
+  shaderGraphic.shader(myShader);
+
+  myShader.setUniform('tex0', video);
+  myShader.setUniform('mouseX', 0.5);
+  myShader.setUniform('window_left', window_left / w);
+  myShader.setUniform('window_right', window_right / w);
+
+  shaderGraphic.shader(myShader);
+
+//   windowGraphic.clear();
+//   if (hands.length > 0) {
+//     for(let i = 0; i < 2; i++) {
+      
+    
+//       let hand = hands[i];
+//       if (hand && hand.index_finger_tip && hand.thumb_tip) {
+//         let index = hand.index_finger_tip;
+//         let thumb = hand.thumb_tip;
+//         let x = (index.x + thumb.x) * 0.5;
+//         let y = (index.y + thumb.y) * 0.5;
+
+//         let d = dist(index.x, index.y, thumb.x, thumb.y);
+//         if (d < 20 && dist(index.x, index.y, window_right, index.y) < 20) {
+//           window_right = lerp(window_right, index.x, 0.5); //index.x
+//         }
+//         // grab left window
+//         if (d < 20 && dist(index.x, index.y, window_left, index.y) < 20) {
+//           window_left = lerp(window_left, index.x, 0.5); //index.x
+//         }
+//         // prevent window close
+//         if (abs(window_right - window_left) < 10) {
+//           window_left = 200
+//           window_right = 360
+//         }
+//         px = x;
+//         py = y;
+//         }
+      
+//       }
+//     }
+  
+  // windowGraphic.line(window_left, 0, window_left, h);
+  // windowGraphic.line(window_right, 0, window_right, h);
+
+  shaderGraphic.rect(0, 0, w, h);
+
+  let w2 = width;
+  let h2 = height;
+  h2 = w2 * (h / w)
+  image(shaderGraphic, 0, 0, w2, h2, 0, 0, w, h);
+  
+  my.fpsSpan.html(framesPerSecond());
+}
+
+// --
+function framesPerSecond() {
+  return frameRate().toFixed(2);
+}
+
+function windowResized() {
+  resizeCanvas(windowWidth, windowHeight);
+}
+
+function setup_fullScreenBtn() {
+  my.fullScreenBtn = createButton('?v=16 Full Screen');
+  my.fullScreenBtn.mousePressed(full_screen_action);
+  my.fullScreenBtn.style('font-size:42px');
+  // my.fullScreenBtn.style('position: absolute');
+  // my.fullScreenBtn.style('bottom: 200px');
+  my.fpsSpan = createSpan('');
+  my.fpsSpan.style('font-size:42px');
+}
+
+function full_screen_action() {
+  my.fullScreenBtn.remove();
+  my.fpsSpan.remove();
+  fullscreen(1);
+  let delay = 3000;
+  setTimeout(ui_present_window, delay);
+}
+
+function ui_present_window() {
+  resizeCanvas(windowWidth, windowHeight);
+}
+
+// https://editor.p5js.org/jht9629-nyu/sketches/FMZ9qAfBr
+// sliding window v2 cut
+
+// https://editor.p5js.org/jht9629-nyu/sketches/KfpABTqxn
+// sliding window v1 responsive
+
+// https://editor.p5js.org/jht9629-nyu/sketches/0OwCIFLm-
+// sliding window v0
+
+// https://editor.p5js.org/leey611/sketches/yzRvaE7Da
+// sliding window v0
+
+// https://editor.p5js.org/jht9629-nyu/sketches/Y8xEY-4dj
+// https://editor.p5js.org/leey611/sketches/Lx5rz9R6T

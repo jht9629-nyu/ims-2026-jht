@@ -36,7 +36,7 @@ async function setup() {
 
   video = createCapture(VIDEO, { flipped: true }, capture_ready_callback);
   // video.size(1920, 1080);
-  // video.hide();
+  video.hide();
 
   setup_fullScreenBtn();
 }
