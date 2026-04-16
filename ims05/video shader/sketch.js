@@ -1,16 +1,19 @@
 // https://editor.p5js.org/jht9629-nyu/sketches/l--iDtUbG
 // ims-05-video shader
 // removed handPose, prep for p5video plugin
+/*
+createShader
+*/
 
 let video;
 // let handPose;
 // let hands = [];
 // let painting;
 // let windowGraphic;
-let window_left = 0.1; // 0.1 is 10% from the left edge of the video
-let window_right = 0.9;
-let window_top = 0.1; // 0.1 is 10% from the top edge of the video
-let window_bottom = 0.9;
+let window_left = 0.4; // 0.1 is 10% from the left edge of the video
+let window_right = 0.6;
+let window_top = 0.4; // 0.1 is 10% from the top edge of the video
+let window_bottom = 0.6;
 let shaderGraphic;
 let myShader;
 // let px = 0;
