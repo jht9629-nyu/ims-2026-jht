@@ -6,10 +6,6 @@ createShader
 */
 
 let video;
-// let handPose;
-// let hands = [];
-// let painting;
-// let windowGraphic;
 let window_left = 0.4; // 0.1 is 10% from the left edge of the video
 let window_right = 0.6;
 let window_top = 0.4; // 0.1 is 10% from the top edge of the video
@@ -27,11 +23,7 @@ function preload() {
 }
 
 function setup() {
-  // handPose = await ml5.handPose({ flipped: true, runtime: 'mediapipe' });
-  // myShader = await loadShader('shader.vert', 'shader-effect.frag');
   createCanvas(windowWidth, windowHeight);
-
-  // createCanvas(640, 480);
 
   video = createCapture(VIDEO, { flipped: true }, capture_ready_callback);
   // video.size(1920, 1080);
@@ -58,9 +50,6 @@ function capture_ready_callback() {
   shaderGraphic = createGraphics(w, h, WEBGL);
   shaderGraphic.clear();
 
-  // windowGraphic = createGraphics(w, h);
-  // windowGraphic.clear();
-
   // handPose.detectStart(video, gotHands);
 }
 
@@ -81,40 +70,6 @@ function draw() {
   myShader.setUniform('window_bottom', window_bottom);
 
   shaderGraphic.shader(myShader);
-
-  //   windowGraphic.clear();
-  //   if (hands.length > 0) {
-  //     for(let i = 0; i < 2; i++) {
-
-  //       let hand = hands[i];
-  //       if (hand && hand.index_finger_tip && hand.thumb_tip) {
-  //         let index = hand.index_finger_tip;
-  //         let thumb = hand.thumb_tip;
-  //         let x = (index.x + thumb.x) * 0.5;
-  //         let y = (index.y + thumb.y) * 0.5;
-
-  //         let d = dist(index.x, index.y, thumb.x, thumb.y);
-  //         if (d < 20 && dist(index.x, index.y, window_right, index.y) < 20) {
-  //           window_right = lerp(window_right, index.x, 0.5); //index.x
-  //         }
-  //         // grab left window
-  //         if (d < 20 && dist(index.x, index.y, window_left, index.y) < 20) {
-  //           window_left = lerp(window_left, index.x, 0.5); //index.x
-  //         }
-  //         // prevent window close
-  //         if (abs(window_right - window_left) < 10) {
-  //           window_left = 200
-  //           window_right = 360
-  //         }
-  //         px = x;
-  //         py = y;
-  //         }
-
-  //       }
-  //     }
-
-  // windowGraphic.line(window_left, 0, window_left, h);
-  // windowGraphic.line(window_right, 0, window_right, h);
 
   shaderGraphic.rect(0, 0, w, h);
 
