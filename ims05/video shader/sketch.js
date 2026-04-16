@@ -18,7 +18,7 @@ let my = {};
 
 function preload() {
   // handPose = ml5.handPose({ flipped: true, runtime: 'mediapipe' });
-  myShader = loadShader('shader.vert', 'shader-effect.frag');
+  myShader = loadShader('shader.vert', 'shader_effect.frag');
   // myShader = loadShader('shader.vert', 'shader.frag');
 }
 
