@@ -7,8 +7,10 @@ let video;
 // let hands = [];
 // let painting;
 // let windowGraphic;
-let window_left = 360;
-let window_right = 360;
+let window_left = 0.1; // 0.1 is 10% from the left edge of the video
+let window_right = 0.9;
+let window_top = 0.1; // 0.1 is 10% from the top edge of the video
+let window_bottom = 0.9;
 let shaderGraphic;
 let myShader;
 // let px = 0;
@@ -70,43 +72,44 @@ function draw() {
 
   myShader.setUniform('tex0', video);
   myShader.setUniform('mouseX', 0.5);
-  myShader.setUniform('window_left', window_left / w);
-  myShader.setUniform('window_right', window_right / w);
+  myShader.setUniform('window_left', window_left);
+  myShader.setUniform('window_right', window_right);
+  myShader.setUniform('window_top', window_top);
+  myShader.setUniform('window_bottom', window_bottom);
 
   shaderGraphic.shader(myShader);
 
-//   windowGraphic.clear();
-//   if (hands.length > 0) {
-//     for(let i = 0; i < 2; i++) {
-      
-    
-//       let hand = hands[i];
-//       if (hand && hand.index_finger_tip && hand.thumb_tip) {
-//         let index = hand.index_finger_tip;
-//         let thumb = hand.thumb_tip;
-//         let x = (index.x + thumb.x) * 0.5;
-//         let y = (index.y + thumb.y) * 0.5;
+  //   windowGraphic.clear();
+  //   if (hands.length > 0) {
+  //     for(let i = 0; i < 2; i++) {
 
-//         let d = dist(index.x, index.y, thumb.x, thumb.y);
-//         if (d < 20 && dist(index.x, index.y, window_right, index.y) < 20) {
-//           window_right = lerp(window_right, index.x, 0.5); //index.x
-//         }
-//         // grab left window
-//         if (d < 20 && dist(index.x, index.y, window_left, index.y) < 20) {
-//           window_left = lerp(window_left, index.x, 0.5); //index.x
-//         }
-//         // prevent window close
-//         if (abs(window_right - window_left) < 10) {
-//           window_left = 200
-//           window_right = 360
-//         }
-//         px = x;
-//         py = y;
-//         }
-      
-//       }
-//     }
-  
+  //       let hand = hands[i];
+  //       if (hand && hand.index_finger_tip && hand.thumb_tip) {
+  //         let index = hand.index_finger_tip;
+  //         let thumb = hand.thumb_tip;
+  //         let x = (index.x + thumb.x) * 0.5;
+  //         let y = (index.y + thumb.y) * 0.5;
+
+  //         let d = dist(index.x, index.y, thumb.x, thumb.y);
+  //         if (d < 20 && dist(index.x, index.y, window_right, index.y) < 20) {
+  //           window_right = lerp(window_right, index.x, 0.5); //index.x
+  //         }
+  //         // grab left window
+  //         if (d < 20 && dist(index.x, index.y, window_left, index.y) < 20) {
+  //           window_left = lerp(window_left, index.x, 0.5); //index.x
+  //         }
+  //         // prevent window close
+  //         if (abs(window_right - window_left) < 10) {
+  //           window_left = 200
+  //           window_right = 360
+  //         }
+  //         px = x;
+  //         py = y;
+  //         }
+
+  //       }
+  //     }
+
   // windowGraphic.line(window_left, 0, window_left, h);
   // windowGraphic.line(window_right, 0, window_right, h);
 
@@ -114,9 +117,9 @@ function draw() {
 
   let w2 = width;
   let h2 = height;
-  h2 = w2 * (h / w)
+  h2 = w2 * (h / w);
   image(shaderGraphic, 0, 0, w2, h2, 0, 0, w, h);
-  
+
   my.fpsSpan.html(framesPerSecond());
 }
 

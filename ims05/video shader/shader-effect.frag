@@ -11,6 +11,8 @@ uniform vec2 texelSize;
 uniform float mouseX;
 uniform float window_left;
 uniform float window_right;
+uniform float window_top;
+uniform float window_bottom;
 
 void main() {
 
@@ -55,6 +57,10 @@ void main() {
   if (1.0-uv.x < window_left || 1.0-uv.x > window_right) {
     // Outside the window
     gl_FragColor = tex;
+  }
+  else if (uv.y < window_top || uv.y > window_bottom) {
+    // Outside the window
+    gl_FragColor = tex;  
   } else {
     // Inside the window: use original texture color
     gl_FragColor = texVideo;
