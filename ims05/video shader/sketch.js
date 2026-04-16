@@ -12,18 +12,18 @@ let window_top = 0.4; // 0.1 is 10% from the top edge of the video
 let window_bottom = 0.6;
 let shaderGraphic;
 let myShader;
-// let px = 0;
-// let py = 0;
 let my = {};
 
-function preload() {
-  // handPose = ml5.handPose({ flipped: true, runtime: 'mediapipe' });
-  myShader = loadShader('shader.vert', 'shader_effect.frag');
-  // myShader = loadShader('shader.vert', 'shader.frag');
-}
+// function preload() {
+//   // handPose = ml5.handPose({ flipped: true, runtime: 'mediapipe' });
+//   myShader = loadShader('shader.vert', 'shader_effect.frag');
+//   // myShader = loadShader('shader.vert', 'shader.frag');
+// }
 
 function setup() {
   createCanvas(windowWidth, windowHeight);
+
+  myShader = createShader(shader_vert, shader_effect_frag);
 
   video = createCapture(VIDEO, { flipped: true }, capture_ready_callback);
   // video.size(1920, 1080);
@@ -32,35 +32,20 @@ function setup() {
   setup_fullScreenBtn();
 }
 
-// function mousePressed() {
-//   console.log(hands);
-//   setTimeout(() => save('emitter.png'), 2000);
-// }
-
-function gotHands(results) {
-  hands = results;
-}
-
 function capture_ready_callback() {
   console.log('capture_ready_callback width', video.width, video.height);
 
   shaderGraphic = createGraphics(video.width, video.height, WEBGL);
   shaderGraphic.clear();
-
-  // handPose.detectStart(video, gotHands);
 }
 
 function draw() {
   if (!shaderGraphic) return;
   // image(video, 0, 0);
 
-  let w = video.width;
-  let h = video.height;
-
   shaderGraphic.shader(myShader);
 
   myShader.setUniform('tex0', video);
-  myShader.setUniform('mouseX', 0.5);
   myShader.setUniform('window_left', window_left);
   myShader.setUniform('window_right', window_right);
   myShader.setUniform('window_top', window_top);
@@ -68,12 +53,16 @@ function draw() {
 
   shaderGraphic.shader(myShader);
 
-  shaderGraphic.rect(0, 0, w, h);
+  let vwidth = video.width;
+  let vheight = video.height;
 
-  let w2 = width;
-  let h2 = height;
-  h2 = w2 * (h / w);
-  image(shaderGraphic, 0, 0, w2, h2, 0, 0, w, h);
+  shaderGraphic.rect(0, 0, vwidth, vheight);
+
+  // render the shaderGraphic scaling it to fit \
+  // while maintaining aspect ratio
+  let nwidth = width;
+  let nheight = width * (vheight / vwidth);
+  image(shaderGraphic, 0, 0, nwidth, nheight, 0, 0, vwidth, vheight);
 
   my.fpsSpan.html(framesPerSecond());
 }
@@ -91,8 +80,6 @@ function setup_fullScreenBtn() {
   my.fullScreenBtn = createButton('?v=16 Full Screen');
   my.fullScreenBtn.mousePressed(full_screen_action);
   my.fullScreenBtn.style('font-size:42px');
-  // my.fullScreenBtn.style('position: absolute');
-  // my.fullScreenBtn.style('bottom: 200px');
   my.fpsSpan = createSpan('');
   my.fpsSpan.style('font-size:42px');
 }

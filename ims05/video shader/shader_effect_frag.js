@@ -12,7 +12,6 @@ uniform sampler2D tex0;
 uniform vec2 texelSize;
 //uniform float u_time;
 
-uniform float mouseX;
 uniform float window_left;
 uniform float window_right;
 uniform float window_top;
