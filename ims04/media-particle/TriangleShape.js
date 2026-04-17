@@ -2,22 +2,22 @@
 let TriangleShape = {
   placeParticles() {
     particles = [];
-    let R = cellSize;           // circumradius
-    let s = R * sqrt(3);        // side length = horizontal spacing
+    let R = cellSize;            // circumradius
+    let H = R * 1.5;             // band height = 3R/2
+    let halfB = R * sqrt(3) / 2; // half base = R * 0.866
 
-    // Rows alternate up/down. y steps alternate between R (up→down) and R/2 (down→up).
-    // x-offset cycles: 0, s/2, s/2, 0, 0, s/2, s/2, 0, ...  (i%4 in {1,2} → s/2)
-    let rowIndex = 0;
-    let y = 0;
-    while (y < aheight + R) {
-      let isUp = rowIndex % 2 === 0;
-      let xOff = (rowIndex % 4 === 1 || rowIndex % 4 === 2) ? s / 2 : 0;
-      for (let x = xOff; x < width + s; x += s) {
-        let c = img_color_xy(x, y);
-        particles.push(new Particle(x, y, c, isUp ? 1 : -1));
+    // In band n (y: nH to (n+1)H), x steps by halfB.
+    // (band + k) % 2 == 0 → up-pointing, centroid at nH + 2H/3 (= nH + R)
+    // (band + k) % 2 == 1 → down-pointing, centroid at nH + H/3 (= nH + R/2)
+    let band = 0;
+    for (let bandY = 0; bandY < aheight; bandY += H, band++) {
+      let k = 0;
+      for (let x = 0; x < width + halfB; x += halfB, k++) {
+        let isUp = (band + k) % 2 === 0;
+        let cy = bandY + (isUp ? H * 2 / 3 : H / 3);
+        let c = img_color_xy(x, cy);
+        particles.push(new Particle(x, cy, c, isUp ? 1 : -1));
       }
-      y += isUp ? R : R / 2;
-      rowIndex++;
     }
   },
   draw(x, y, size, dir = 1) {
@@ -25,13 +25,13 @@ let TriangleShape = {
     translate(x, y + ayoffset);
     beginShape();
     if (dir >= 0) {
-      vertex(0, -size);                        // apex
-      vertex(size * 0.866, size * 0.5);        // bottom-right
-      vertex(-size * 0.866, size * 0.5);       // bottom-left
+      vertex(0, -size);
+      vertex(size * 0.866, size * 0.5);
+      vertex(-size * 0.866, size * 0.5);
     } else {
-      vertex(0, size);                         // apex
-      vertex(size * 0.866, -size * 0.5);       // top-right
-      vertex(-size * 0.866, -size * 0.5);      // top-left
+      vertex(0, size);
+      vertex(size * 0.866, -size * 0.5);
+      vertex(-size * 0.866, -size * 0.5);
     }
     endShape(CLOSE);
     pop();
