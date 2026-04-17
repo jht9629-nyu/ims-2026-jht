@@ -28,6 +28,11 @@
 - [media-particle](ims04/media-particle/index.html)
 - [ims03-Arial](ims04/ims03-Arial/index.html)
 
+## Week05
+
+- [sliding_window](ims05/sliding_window/index.html)
+- [video_shader](ims05/video_shader/index.html)
+
 ## Notes
 
 ```

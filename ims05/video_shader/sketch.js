@@ -6,7 +6,7 @@ createShader
 */
 
 let video;
-let window_left = 0.4; // 0.1 is 10% from the left edge of the video
+let window_left = 0.1; // 0.1 is 10% from the left edge of the video
 let window_right = 0.6;
 let window_top = 0.4; // 0.1 is 10% from the top edge of the video
 let window_bottom = 0.6;
