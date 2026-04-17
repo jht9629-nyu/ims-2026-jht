@@ -45,6 +45,11 @@
 ## Notes
 
 ```
+
+Claude prompt:
+  adjust ims04/media-particle/TriangleShape to tile
+  >> fails.
+
 https://openprocessing.org/sketch/2682081
 Marching Ripples by Kathy McGuiness
 --> ims04/sketch2911242-particles/mySketch.js

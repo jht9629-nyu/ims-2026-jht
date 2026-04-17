@@ -1,10 +1,11 @@
 class Particle {
-  constructor(x, y, c) {
+  constructor(x, y, c, dir = 1) {
     this.x = x;
     this.y = y;
     this.c = c;
     this.homeX = x;
     this.homeY = y;
+    this.dir = dir;
   }
   selectColor() {
     this.c = img_color_xy(this.x, this.y);
@@ -28,7 +29,7 @@ class Particle {
   }
   draw() {
     fill(this.c);
-    ashape.draw(this.x, this.y, cellSize);
+    ashape.draw(this.x, this.y, cellSize, this.dir);
     // ellipse(this.x, this.y + ayoffset, res, res);
   }
 }
