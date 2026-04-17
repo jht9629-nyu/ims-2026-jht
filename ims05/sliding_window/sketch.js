@@ -102,8 +102,8 @@ function draw() {
     }
   }
 
-  // windowGraphic.line(window_left, 0, window_left, h);
-  // windowGraphic.line(window_right, 0, window_right, h);
+  windowGraphic.line(window_left, 0, window_left, h);
+  windowGraphic.line(window_right, 0, window_right, h);
 
   shaderGraphic.rect(0, 0, w, h);
 
@@ -114,7 +114,7 @@ function draw() {
   image(shaderGraphic, 0, 0, w2, h2, 0, 0, w, h);
 
   // !!@ is this needed?
-  // image(windowGraphic, 0, 0, w2, h2, 0, 0, w, h);
+  image(windowGraphic, 0, 0, w2, h2, 0, 0, w, h);
 
   my.fpsSpan.html(framesPerSecond());
 }

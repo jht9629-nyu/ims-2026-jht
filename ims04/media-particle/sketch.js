@@ -23,7 +23,7 @@ let ball;
 let show_video = false;
 let ball_move_noise = 0;
 let ashape;
-let shapes = [CircleShape, HexShape, DiamondShape];
+let shapes = [TriangleShape, CircleShape, HexShape, DiamondShape];
 let shapeIndex = 0;
 
 function preload() {
