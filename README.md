@@ -22,10 +22,15 @@
 ### particles evolution
 
 - [sketch2911242-particles](ims04/sketch2911242-particles/index.html)
+  - starting sketch from openprocessing
 - [image-particle](ims04/image-particle/index.html)
+  - using my photo
   - no meta viewport
 - [video-particle](ims04/video-particle/index.html)
+  - image replaced by video
 - [media-particle](ims04/media-particle/index.html)
+  - combo of image and video and variety of shapes
+
 - [ims03-Arial](ims04/ims03-Arial/index.html)
 
 ## Week05
