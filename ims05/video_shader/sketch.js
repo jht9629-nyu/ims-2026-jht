@@ -1,9 +1,8 @@
 // https://editor.p5js.org/jht9629-nyu/sketches/l--iDtUbG
 // ims-05-video shader
+// shader effect with sliding window
+// converted to use createShader vs. loadShader
 // removed handPose, prep for p5video plugin
-/*
-createShader
-*/
 
 let video;
 let window_left = 0.1; // 0.1 is 10% from the left edge of the video

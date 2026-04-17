@@ -1,13 +1,6 @@
 // https://editor.p5js.org/jht9629-nyu/sketches/Y8xEY-4dj
 // https://editor.p5js.org/leey611/sketches/Lx5rz9R6T
 // sliding window v1 responsive horizontal two hands copy
-/* 
-- windowGraphic does not appear to be needed
-
-5000
-🌸 p5.js says: Expected Image or Element or Texture or Framebuffer 
-or FramebufferTexture at the first parameter in image(). 
-*/
 
 let video;
 let handPose;
@@ -181,3 +174,11 @@ function ui_present_window() {
 
 // https://editor.p5js.org/leey611/sketches/yzRvaE7Da
 // sliding window v0
+
+/* 
+- windowGraphic does not appear to be needed
+
+5000
+🌸 p5.js says: Expected Image or Element or Texture or Framebuffer 
+or FramebufferTexture at the first parameter in image(). 
+*/

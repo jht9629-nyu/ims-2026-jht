@@ -31,7 +31,11 @@
 ## Week05
 
 - [sliding_window](ims05/sliding_window/index.html)
+  - // sliding window v1 responsive horizontal two hands copy
 - [video_shader](ims05/video_shader/index.html)
+  - // shader effect with sliding window
+  - // converted to use createShader vs. loadShader
+  - // removed handPose, prep for p5video plugin
 
 ## Notes
 
@@ -52,5 +56,7 @@ media-particles DiamondShape and HexShape from Claude AI
 
 ## Changes
 
+- 2026-04-17 03:57:52
+- added sliding_window
 - 2026-04-10 08:03:44
 - media-particles start with CircleShape
