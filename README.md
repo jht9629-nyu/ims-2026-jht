@@ -45,11 +45,16 @@
 ## Notes
 
 ```
-
+2026-04-17 13:16:44
 Claude prompt:
   adjust ims04/media-particle/TriangleShape to tile
   >> fails.
+  fails. triangles overlap -- provied screen shot
+  >> success after a minutes
+  >> my tiled triangle algorithm, simpler:
+  https://github.com/jht1493-gmail/p5VideoKit/blob/main/src/videoKit/effects/bset/eff_triangle.js
 
+2026-04-xx
 https://openprocessing.org/sketch/2682081
 Marching Ripples by Kathy McGuiness
 --> ims04/sketch2911242-particles/mySketch.js
@@ -57,7 +62,6 @@ Marching Ripples by Kathy McGuiness
 // Fixing The Coding Train’s Code (Water Ripple Shader)
 
 media-particles DiamondShape and HexShape from Claude AI
-
 ```
 
 ## Plan

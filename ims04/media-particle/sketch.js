@@ -23,8 +23,8 @@ let ball;
 let show_video = false;
 let ball_move_noise = 0;
 let ashape;
-// let shapes = [TriangleShape, CircleShape, HexShape, DiamondShape];
-let shapes = [TriangleShape];
+let shapes = [TriangleShape, DiamondShape, HexShape, CircleShape];
+// let shapes = [TriangleShape];
 let shapeIndex = 0;
 
 function preload() {
@@ -72,12 +72,16 @@ function prepare_video() {
 
   show_video = true;
 
-  setInterval(next_shape, step_pause * 1000);
+  // setInterval(next_shape, step_pause * 1000);
 }
 
 // https://developer.mozilla.org/en-US/docs/Web/API/Window/setInterval
 // https://developer.mozilla.org/en-US/docs/Web/API/Window/setTimeout
 // setTimeout(func, delay-milliseconds)
+
+function mousePressed() {
+  next_shape();
+}
 
 function next_shape() {
   console.log('next_shape', shapeIndex);
