@@ -1,0 +1,82 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Matt Parker Noise Game</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.9.0/p5.min.js"></script>
+    <style>
+      body {
+        margin: 0;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        height: 100vh;
+        background: #111;
+      }
+      canvas {
+        display: block;
+      }
+    </style>
+  </head>
+  <body>
+    <script>
+      // Matt Parker 6:24 PM · Oct 16, 2020
+      // https://x.com/madparker/status/1317229846511144961
+      // Converted with claude AI from processing to p5.js
+
+      let s = 0,
+        o = 0,
+        p = 0,
+        f = 0;
+      const c = 480;
+      let currentKey = '';
+
+      function setup() {
+        createCanvas(c, c);
+        pixelDensity(1);
+      }
+
+      function draw() {
+        f++;
+        s++;
+
+        loadPixels();
+        for (let x = 0; x < c; x++) {
+          for (let y = 0; y < c; y++) {
+            let n = round(noise((x + f) * 0.01, y / 99.0)) * 255;
+            let idx = (y * c + x) * 4;
+            pixels[idx] = n;
+            pixels[idx + 1] = n;
+            pixels[idx + 2] = n;
+            pixels[idx + 3] = 255;
+          }
+        }
+        updatePixels();
+
+        if (currentKey === 'a') o -= 2;
+        if (currentKey === 'd') o += 2;
+        if (currentKey === 'w') p -= 2;
+        if (currentKey === 's') p += 2;
+
+        o = ((o % c) + c) % c;
+        p = ((p % c) + c) % c;
+
+        if (red(get(o, p)) > 0) s = 0;
+
+        fill(c, 0, 0);
+        text(s, o, p);
+      }
+
+      function keyPressed() {
+        currentKey = key.toLowerCase();
+      }
+
+      function keyReleased() {
+        if (key.toLowerCase() === currentKey) {
+          currentKey = '';
+        }
+      }
+    </script>
+  </body>
+</html>

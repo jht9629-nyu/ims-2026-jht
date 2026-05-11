@@ -1,0 +1,79 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Matt Parker – Color Spread</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.9.4/p5.min.js"></script>
+    <style>
+      html,
+      body {
+        margin: 0;
+        padding: 0;
+        background: #000;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        height: 100vh;
+        overflow: hidden;
+      }
+      canvas {
+        display: block;
+      }
+    </style>
+  </head>
+  <body>
+    <script>
+      // matt-parker – color spread
+      // https://www.madparker.com/work/art/p5t
+      // https://www.youtube.com/watch?v=p07CAS2mWGc
+      // #p5t (2020-Ongoing)
+
+      // Converted from Processing to p5.js
+      // fails to run in p5.js, but works in processing
+
+      // matt-parker
+      // https://www.madparker.com/work/art/p5t
+      // https://x.com/madparker/status/1328187155794055169
+      // from 11:04 PM · Nov 15, 2020
+
+      let m, x, y, o, p;
+      const n = 480;
+
+      function setup() {
+        createCanvas(n, n);
+        pixelDensity(1);
+        colorMode(HSB);
+        m = 0;
+        o = color(0, 0, 0);
+        p = color(0, 0, 0);
+      }
+
+      function draw() {
+        if (m < 1 || m >= n * n) {
+          set(n - 1, n - 1, (o = p));
+          set(9, 9, (p = color(random(n), n, n)));
+        }
+        m = 0;
+        for (x = 0; x < n; x++) {
+          for (y = 0; y < n; y++) {
+            m += c(o) + c(p);
+          }
+        }
+        updatePixels();
+      }
+
+      function c(l) {
+        if (colorsEqual(get(x, y), l)) {
+          set(int(random(4)) - 2 + x, int(random(4)) - 2 + y, l);
+          return 1;
+        }
+        return 0;
+      }
+
+      function colorsEqual(a, b) {
+        return red(a) === red(b) && green(a) === green(b) && blue(a) === blue(b);
+      }
+    </script>
+  </body>
+</html>
