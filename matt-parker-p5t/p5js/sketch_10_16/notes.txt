@@ -1,0 +1,22 @@
+Created matt-parker-p5t/p5js/sketch_10_16/sketch.js and matt-parker-p5t/p5js/sketch_10_16/index.html.
+
+The port maps faithfully to the original:
+• Every pixel set via loadPixels() / updatePixels() using noise((x+f)*0.01, y/99.0) 
+    rounded to black or white - the scrolling maze
+• WASD movement with keyIsDown () , positions wrap with modulo c
+• Score s resets to 0 when landing on a white pixel, displayed in red at player position
+• pixelDensity(1) keeps it at true 480×480
+
+Note: the pixel loop (230,400 noise) calls per frame) may run slower than the Java original 
+- that's inherent to JS/p5. The gameplay will still work correctly.
+
+# --
+
+Add a p5.js port of Matt Parker's sketch_10_16: new files
+matt-parker-p5t/p5js/sketch_10_16/index.html, sketch.js, and notes.txt.
+sketch.js implements a noise-based scrolling maze, WASD movement with
+wraparound, score reset on white pixels, and uses pixelDensity(1). Update
+.claude/settings.local.json to allow WebSearch plus a Bash mkdir permission and
+register the p5js directory as an additional directory. Also append a timestamp
+entry to README. Note: the pixel update loop is CPU-heavy in JS and may run
+slower than the original Java version.

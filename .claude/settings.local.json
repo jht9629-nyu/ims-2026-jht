@@ -1,7 +1,11 @@
 {
   "permissions": {
     "allow": [
-      "WebSearch"
+      "WebSearch",
+      "Bash(mkdir -p /Users/jht2/Documents/projects/_2026/ims-2026-jht/matt-parker-p5t/p5js/sketch_10_16)"
+    ],
+    "additionalDirectories": [
+      "/Users/jht2/Documents/projects/_2026/ims-2026-jht/matt-parker-p5t/p5js"
     ]
   }
 }
