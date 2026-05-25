@@ -1,0 +1,89 @@
+
+Though for 485s
+
+Let me analyze this Processing sketch:
+
+Variables: m, x, y, o, p, n=480
+
+setup(): Sets pixel density to 1, size to 480x480, colorMode(3) - in Processing, colorMode(3) is a compact way to set RGB mode where max value is 3... Wait, actually in Processing, colorMode(RGB) sets RGB mode, and colorMode(3) would be passing an integer 3 which might be interpreted differently. Let me think...
+
+Actually, in Processing the color mode constants are RGB = 1, HSB = 2, and ALPHA = 4, so colorMode(3) isn't a standard mode constant - I'm not sure what that would do in this context.
+
+Let me reconsider: colorMode(3) followed by color(random(n), n, n) suggests the code is setting up a color space where the max value is 480 (n), and creating colors with hue, saturation, and brightness all set to that range, which would make sense for HSB mode. I'm realizing that colorMode(3) might actually be setting the color mode to a value that doesn't correspond to the standard RGB or HSB constants, which could cause unexpected behavior or default to RGB—but that contradicts the visual output. Let me reconsider whether the parameter is actually specifying both the mode and a maximum value, or if there's something about how Processing interprets this non-standard mode number that I'm missing. I'm realizing that colorMode(3) probably doesn't map to a standard Processing mode, so it might just cause unexpected behavior or default somewhere. Rather than getting stuck on that detail, I should focus on what the sketch actually does visually: it starts with a random bright color, then each frame spreads pixels to neighboring positions if they match either the old or new color, continuing until all pixels converge to one of the two colors.
+
+For p5.js, I need to handle the pixel manipulation efficiently using loadPixels() and direct array access rather than calling get() and set() repeatedly. The core logic tracks two colors—the old one and the current new one—and when the spread is complete, it shifts the old color to the new one and picks another random color to start spreading again. I'm diving into how Processing handles colorMode(3) — since it's not a standard RGB or HSB mode, the color values might just be used as raw integers in the packed ARGB format, which would explain why the code golf works with those specific parameters. I'm realizing colorMode(3) in Processing isn't HSB mode—that's mode 2—so I'm trying to figure out what happens when you pass RGB values exceeding 255 like color(random(480), 480, 480). The values would get clamped to the max, giving mostly cyan-tinted colors, though it's possible the original intent was HSB mode and the code still produces an interesting visual result despite the apparent error.
+
+For the p5.js version, I'll use colorMode(HSB, 480) to match what the tweet appears to show—colorful spreading pixels—which suggests HSB mode was the intended effect.
+
+Writing p5.js code... Writing pixel manipulation helpers... Setting up the pixel array approach... Writing pixel manipulation code... I'm second-guessing myself on how p5.js color functions work across different color modes—they should return 0-255 regardless, but I want to be sure. The safest approach is to explicitly use colorMode(RGB) when extracting color values, then store everything as RGB in the pixel array to avoid any rounding or conversion issues.
+
+Writing the complete implementation... Writing p5.js sketch code...
+
+I'm realizing there's a bootstrapping problem—when the algorithm starts with m=0, both the old and new particles default to black, which doesn't give the system anywhere interesting to go. a new random p. But initially there are no pixels with the old color, so they won't spread.
+
+Looking at the Processing code, all variables initialize to 0 in Java, so the canvas starts completely black. On the first draw call, the entire canvas matches the old color (black), meaning every pixel attempts to spread, but since they're all copying black to black neighbors, nothing visually changes until the new random color p gets placed at position (9,9) and begins propagating outward. When o becomes the random color and a new p is created, both start at position (9,9), so very few pixels match either one initially—the transition doesn't trigger until one of them fills the canvas. Looking at the condition more carefully, it's checking if m is less than 1 or greater than or equal to n*n, using bitwise OR which still evaluates as boolean logic.
+
+So the transition happens either when no pixels match (m=0, meaning fresh colors) or when all pixels match one of the two colors. For my p5.js version, I need to be careful with the initial state—starting with black background and black colors means the first frame will correctly trigger the transition since m=0, but I should verify how the HSB color mode handles the initial black values. I'm realizing the initialization logic is tricky—if the background starts as black (0,0,0 in RGB) and the initial color o is also black, then every pixel would match, making m = n*n and immediately triggering the transition. But in Processing, the canvas state before any drawing is ambiguous—it could be uninitialized memory or a default color—so the actual behavior depends on what get() returns for those initial pixels and what the background actually is when the sketch starts. I see the issue now—if the background starts black and o is also black, then m immediately equals the total pixel count, triggering a transition loop. The solution is to initialize the canvas with a non-black background color so m stays at 0 until the colored pixels actually spread across the canvas. p. Eventually p is some non-black color, and as it spreads from (9,9), m is small because most pixels don't match the new p (and o is now the previous color, not black).
+
+Let me trace through more carefully:
+
+Frame 1: m=0, condition true → o=p=black, new random p (say cyan), pixel at (9,9) becomes cyan. m=0 initially.
+
+Loop: count pixels = black (all 480480) + pixels = cyan (just 1) = nn + 1
+
+m = nn + 1, which is >= nn
+
+Frame 2: m>=n*n, condition true → o=cyan, new random p (say green), pixel at (n-1,n-1) becomes cyan, pixel at (9,9) becomes green.
+
+Loop: count pixels = cyan (1 at n-1,n-1) + green (1 at 9,9) = 2
+
+m = 2
+
+Frame 3: m=2, 1 <= m < n*n, condition false → just run the loop
+
+Cyan pixel at (n-1,n-1) spreads to neighbors
+
+Green pixel at (9,9) spreads to neighbors
+
+m grows as they spread
+
+So the pattern becomes clear: the first frame is a special initialization where black fills the canvas and triggers an immediate transition, then two colored pixels start spreading from opposite corners and grow outward until one dominates enough to trigger the next color change. For p5.js, I need to initialize with a black background, set m to 0, and let the draw loop handle the rest. I'm clarifying how p5.js handles background() with a single argument—it always produces grayscale regardless of color mode, so background(0) gives black pixels that match my comparison value. Now I'm tracing through the Processing code to understand how m gets reset and accumulated each frame to track color changes.
+
+Setting up the JavaScript implementation... Writing animation logic... Writing HTML wrapper...
+
+Now I'm thinking through the file structure—the new p5.js version should go in a p5js folder alongside the existing p5java directory, maintaining the same sketch organization. I'm concerned about performance with the pixel-by-pixel operations on a 480x480 canvas in JavaScript—that's over 230,000 iterations per frame with color comparisons and writes, which could run at only 5-15fps. I'll stick with p5's random() for correctness rather than micro-optimizing, since this generative art sketch should still be acceptable at that speed.
+
+Writing p5.js code... Writing pixel manipulation logic... I'm realizing there's a potential issue with floating-point precision when storing pixel values—if red() returns something like 127.6, the bitwise OR truncates it to 127, but p5.js might handle the stored pixel differently when it accesses it internally, which could cause a mismatch when comparing values later.
+
+To be safe, I should use Math.round() instead of the bitwise OR operator when extracting color components, since that'll handle fractional values from HSB-to-RGB conversions more reliably and ensure consistent comparisons with the integer values stored in the pixel array.
+
+Now I need to finalize the implementation and add a source attribution. Looking at the project structure, I should save this in the p5js/sketch_11_15/ folder to match the naming convention used in the p5java directory.
+
+# --
+
+What the port does:
+
+sketch.js mirrors the Processing logic exactly:
+
+- Two colors tracked: o (old) and p (current), stored as pre-computed RGB triplets
+
+- When m < 1 || m >= n*n (no matching pixels, or canvas fully claimed): promote
+p→o, generate a new random fully-saturated HSB color as p, seed it at (9,9) 
+
+- Each frame: iterate all pixels, spread any pixel matching o or p to a random neighbor
+(offset -2 to +1), count matches into m 
+
+- loadPixels()/updatePixels() used instead
+of get()/set() for performance Color mode: colorMode(HSB, n) →
+color(random(480), 480, 480) gives fully saturated/bright colors at random hue,
+matching color(random(n), n, n) from the original
+
+# --
+
+Add a p5.js port of Matt Parker's sketch_11_15: creates
+matt-parker-p5t/p5js/sketch_11_15 with index.html, sketch.js and notes.txt.
+README updated with a short note about creating the p5js version. Also remove
+the old p5java sketch (sketch_260524b.pde). The new sketch.js mirrors the
+Processing logic (HSB colorMode, pixel-level spread of two colors using
+loadPixels/updatePixels) and seeds/rotates colors when the canvas is fully
+claimed or empty.
