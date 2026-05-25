@@ -5,7 +5,7 @@ int x, y, s, o, p, f, c=480;
 void setup() {
   // TRY disable for top left quadrant placement
   // and red text travels to other quadrants 
-  //pixelDensity(1); 
+  pixelDensity(1); 
   size(480, 480);
 }
 void draw() {

@@ -45,12 +45,20 @@
 ## Notes
 
 ```
+2026-05-25 03:40:37
+github desktop ai:
+Enable pixelDensity and add README metadata
+Uncommented pixelDensity(1) in matt-parker-p5t/p5java/sketch_10_16/sketch_10_16.pde to enforce 1:1 pixel density and stabilize rendering/placement across displays. Updated README.md with the repository link, author contact (Matt Parker), and a new Changes entry (2026-05-24) noting p5java & p5js work.
+
 2026-05-24 22:05:02
 create p5js version of sketch_11_15.pde, save in new folder p5js
 >> think for a while
 2026-05-24 22:37:10
 create p5js version of sketch_10_16.pde, save in new folder p5js
 2026-05-24 22:40:46
+
+https://github.com/madparker/-p5t
+Matt Parker <madparker@nyu.edu>
 
 ```
 
@@ -80,6 +88,9 @@ media-particles DiamondShape and HexShape from Claude AI
 
 ## Changes
 
+- 2026-05-24 23:18:02
+  - p5java & p5js
+  - https://github.com/madparker/-p5t
 - 2026-04-17 03:57:52
 - added sliding_window
 - 2026-04-10 08:03:44
