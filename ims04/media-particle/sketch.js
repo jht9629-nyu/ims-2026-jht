@@ -21,7 +21,7 @@ let avideo;
 let particles = [];
 let ball;
 let show_video = false;
-let ball_move_noise = 0;
+let ball_move_noise = 1;
 let ashape;
 let shapes = [TriangleShape, DiamondShape, HexShape, CircleShape];
 // let shapes = [TriangleShape];
